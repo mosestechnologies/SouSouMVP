@@ -18,8 +18,10 @@
   "homepage": "https://github.com/mosestechnologies/SouSou#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "bootstrap": "^4.5.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongoose": "^5.9.28"
+    "mongoose": "^5.9.28",
+    "react-router-dom": "^5.2.0"
   }
 }
