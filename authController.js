@@ -33,7 +33,7 @@ exports.register = async (req, res)=>{
 /* -------------------------------------------------------------------------- */
 
 exports.login = async (req, res)=>{
-    console.log(req.body);
+    console.log(JSON.stringify(req.body, undefined , 4) );
     try {
         const checkEmail = await UsersModel.findOne({email : req.body.email});  // Verifying Email
         if (checkEmail) // If valid Email, Else Throw Error

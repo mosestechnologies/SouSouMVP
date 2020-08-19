@@ -8,7 +8,7 @@ export default class SignUp extends Component {
 
                 <div className="form-group">
                     <label>First name</label>
-                    <input type="text" className="form-control" placeholder="First name" />
+                    <input type="text" className="form-control input" placeholder="First name" />
                 </div>
 
                 <div className="form-group">
@@ -28,7 +28,7 @@ export default class SignUp extends Component {
 
                 <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
                 <p className="forgot-password text-right">
-                    Already registered<Link className="nav-link" to={"/sign-in"}> SignUp</Link> 
+                    Already registered<Link className="nav-link" to={"/sign-in"}> SignUp</Link>
                 </p>
             </form>
         );
