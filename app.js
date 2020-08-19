@@ -9,9 +9,11 @@ const app = express();
 
 // local imports
 const User = require('./modules/users/model/users');  // Users modle import
+const Group = require('./modules/group/model/group');
 
 //  Importing  routes
 const usersRoutes = require('./modules/users/routes/users');  // Users routes import
+const groupRoutes = require('./modules/group/routes/group');
 const authRoute = require('./auth');
 const morgan = require('morgan');
 
@@ -25,6 +27,7 @@ app.use(morgan('combined'));  // Output to console the request routes + status
 /* --------------------------------- Routes --------------------------------- */
 
 app.use('/users', usersRoutes);  // Connecting to Products
+app.use('/group', groupRoutes);
 app.use('/api/auth', authRoute); // Connected to Authentication
 
 app.get("/", (req, res) => {
@@ -46,7 +49,7 @@ mongoose.connect(
 
 /* --------------------------------- server --------------------------------- */
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 app.listen(port, ()=>{
     console.log(`<<<  Sever Started  >>> on port ${port}`);
 });

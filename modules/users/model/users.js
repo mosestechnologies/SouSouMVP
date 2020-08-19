@@ -1,5 +1,6 @@
-const mongoose = require("mongoose")
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Group = require('../../group/model/group');
+const Schema = mongoose.Schema;
 
 const users = new Schema({
     first_name: {
@@ -40,4 +41,4 @@ const users = new Schema({
     },
 })
 
-module.exports = mongoose.model("Users", users)
+module.exports = mongoose.model("Users", users);
