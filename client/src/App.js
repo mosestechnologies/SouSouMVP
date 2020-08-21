@@ -17,7 +17,7 @@ function App() {
 				<Switch>
 					<Route exact path="/" component={Homepage} />
 
-					<div className="auth-wrapper">
+					<div className="auth-wrapper container">
 						<div className="auth-inner">
 							<Route path="/sign-in" component={Login} />
 							<Route path="/sign-up" component={SignUp} />
