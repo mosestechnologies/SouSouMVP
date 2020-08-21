@@ -33,14 +33,14 @@ exports.join_group = async(req, res) => {
 		let userID = req.params.userID;
 		let groupID = req.params.groupID;
 		//get the group of given group ID
-		const group = Group.findById(groupID);
+		const group = await Group.findById(groupID);
 		let memberLimit = group.members_limit;
 		let currentNumberOfMember = group.members.length;
 		if(currentNumberOfMember<memberLimit){
 			//means there is still a place
 			//get new user's details from POST body
 			let newUserID = req.body.userID;
-			const result = Group.findByIdAndUpdate(groupID, { $push: {members: newUserID}});
+			const result = await Group.findByIdAndUpdate(groupID, { $push: {members: newUserID}});
 			if(result){
 				let responseJSON = {
 					message: "Successfully joined group",
