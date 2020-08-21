@@ -19,8 +19,8 @@ exports.find = async (req, res) => {
 	try {
 		const user = await UsersModel.findOne()
 			.where("unique_id")
-			.equals(Number(req.params.id))
-		console.log(typeof (user));
+			.equals(req.params.id)
+		console.log(typeof(user));
 		if (user) {
 			res.json(user)
 		} else {
@@ -54,8 +54,8 @@ exports.generateGroupReferral = async (req, res) => {
 	try {
 		//Referral link could look for example like this: /register?referrer=${_id}, where ${_id} is user unique ID.
 		//when someone want to join a group use => referral/:userId/:groupId
-		let endpoint = 'localhost:3000/';
-		let userID = req.params.userId;
+		let endpoint = 'localhost:5000/';//TODO: change it for production
+		let userID = req.params.userID;
 		let groupID = req.params.groupID;
 		let responseJSON = {
 			userId: userID,
@@ -64,7 +64,7 @@ exports.generateGroupReferral = async (req, res) => {
 		res.status(200).json(responseJSON);
 
 
-	} catch (err) {
-
+	} catch (error) {
+		res.json(error);
 	}
 }

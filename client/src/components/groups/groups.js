@@ -1,8 +1,10 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-export default class SignUp extends Component {
-    render() {
-        return (
+import React, { Component } from 'react';
+
+const groups = () => {
+    return(
+        <div>
+            <h1>HELoo</h1>
+            Hello
             <form>
                 <h3>Sign Up</h3>
 
@@ -27,10 +29,9 @@ export default class SignUp extends Component {
                 </div>
 
                 <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
-                <p className="forgot-password text-right">
-                    Already registered<Link className="nav-link" to={"/sign-in"}> SignUp</Link>
-                </p>
             </form>
-        );
-    }
-}
+        </div>
+    );
+};
+
+export default groups;
