@@ -14,4 +14,8 @@ router.delete('/delete-user/:id', controller.delete);
 	// Udpdate user route
 router.put('/update', controller.update);
 
+router.get('/referral/:userID/:groupID')
+
+
+
 module.exports =  router;

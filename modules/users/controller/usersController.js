@@ -1,25 +1,26 @@
 const UsersModel = require('../model/users');
+const group = require('../../group/model/group');
 
 // Add user
-exports.add = async (req,res) => {
-    try{
+exports.add = async (req, res) => {
+	try {
 		console.log("Request: ", req.body);
 		const data = await UsersModel.insertMany(req.body)
 		res.status(302).send("user successfully added");
-    }catch(err){
+	} catch (err) {
 		console.log("Error: ", err);
-		res.json({message : err});
+		res.json({ message: err });
 	}
 }
 
 // FIND User
-exports.find = async (req,res) => {
+exports.find = async (req, res) => {
 	console.log("Request: ", req.params.id);
 	try {
 		const user = await UsersModel.findOne()
 			.where("unique_id")
 			.equals(Number(req.params.id))
-		console.log(typeof(user));
+		console.log(typeof (user));
 		if (user) {
 			res.json(user)
 		} else {
@@ -31,19 +32,39 @@ exports.find = async (req,res) => {
 }
 
 // DELETE User
-exports.delete = async (req, res)=>{
+exports.delete = async (req, res) => {
 	try {
-		const deleteUser = await UsersModel.deleteOne({unique_id : req.params.id});
-		res.json({deleted : "Item deleted Successfully"});
+		const deleteUser = await UsersModel.deleteOne({ unique_id: req.params.id });
+		res.json({ deleted: "Item deleted Successfully" });
 	} catch (error) {
 		res.json(error);
 	}
 };
 
 // UPDATE User
-exports.update = async (req, res)=>{
+exports.update = async (req, res) => {
 	try {
 	} catch (error) {
 		res.json(error);
 	}
 };
+
+
+exports.generateGroupReferral = async (req, res) => {
+	try {
+		//Referral link could look for example like this: /register?referrer=${_id}, where ${_id} is user unique ID.
+		//when someone want to join a group use => referral/:userId/:groupId
+		let endpoint = 'localhost:3000/';
+		let userID = req.params.userId;
+		let groupID = req.params.groupID;
+		let responseJSON = {
+			userId: userID,
+			referralURL: endpoint+'/group/joingroup/'+userID+ '/'+groupID
+		}
+		res.status(200).json(responseJSON);
+
+
+	} catch (err) {
+
+	}
+}
