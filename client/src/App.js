@@ -3,15 +3,40 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Navbar from "./components/navbar";
-import Login from "./components/login.component";
-import SignUp from "./components/signup.component";
+import Login from "./components/login";
+import SignUp from "./components/signup";
 import Homepage from "./components/homepage";
+import Groups from './components/groups/groups';
 
 function App() {
 	return (
 		<Router>
 			<div className="App">
-				{/* <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+				<Navbar />
+				<Switch>
+					<Route exact path="/" component={Homepage} />
+
+					<div className="auth-wrapper">
+						<div className="auth-inner">
+							<Route path="/sign-in" component={Login} />
+							<Route path="/sign-up" component={SignUp} />
+						</div>
+					</div>
+					<Route path="/groups" component={Groups}/>
+				</Switch>
+			</div>
+		</Router>
+	);
+}
+
+export default App;
+
+
+
+
+
+
+{/* <nav className="navbar navbar-expand-lg navbar-light fixed-top">
 				<div className="container">
 				<Link className="navbar-brand" to={"/"}>Su Su</Link>
 				<div className="collapse navbar-collapse" id="navbarTogglerDemo02">
@@ -22,19 +47,4 @@ function App() {
 				</div>
 				</div>
 				</nav> */}
-				<Navbar />
-				<Switch>
-					<Route exact path="/" component={Homepage} />
-					<div className="auth-wrapper">
-						<div className="auth-inner">
-							<Route path="/sign-in" component={Login} />
-							<Route path="/sign-up" component={SignUp} />
-						</div>
-					</div>
-				</Switch>
-			</div>
-		</Router>
-	);
-}
 
-export default App;

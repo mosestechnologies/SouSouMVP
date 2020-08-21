@@ -18,8 +18,8 @@ function App() {
           </div>
         </div>
       </nav>
-     
-       
+
+
     </div>
   );
 }

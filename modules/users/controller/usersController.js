@@ -18,7 +18,7 @@ exports.find = async (req,res) => {
 	try {
 		const user = await UsersModel.findOne()
 			.where("unique_id")
-			.equals(Number(req.params.id))
+			.equals(req.params.id)
 		console.log(typeof(user));
 		if (user) {
 			res.json(user)
