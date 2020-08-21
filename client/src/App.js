@@ -1,12 +1,13 @@
 import React from "react";
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Navbar from "./components/navbar";
 import Login from "./components/login";
 import SignUp from "./components/signup";
 import Homepage from "./components/homepage";
 import Groups from './components/groups/groups';
+
+//import "./App.css";
+import "./black-dash.css";
 
 function App() {
 	return (

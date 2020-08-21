@@ -19,7 +19,7 @@ exports.get_groups = async (req, res) => {
 		exec(function (err, data) {
 			if (err) return handleError(err);
 			console.log(data);
-			res.json({Groups: data.members})
+			res.json({Groups: data})
 		});
 
 	} catch (error) {
