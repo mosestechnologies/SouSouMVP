@@ -19,7 +19,6 @@ const group = new Schema({
     duration: {
         type: String,
         required: true,
-        unique: true,
         trim: true
     },
     target_amount: {
