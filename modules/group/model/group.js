@@ -16,23 +16,23 @@ const group = new Schema({
         type: String,
         required: true
     },
-    duration: {
+    duration: {//1 year
         type: String,
         required: true,
         unique: true,
         trim: true
     },
-    target_amount: {
+    target_amount: {//$1200 in total
         type: String,
         required: true,
         trim: true
     },
-    payment_frequency: {
+    payment_frequency: { //$100 per month
         type: String,
         required: true,
         trim: true
     },
-    payment_cycle: {
+    payment_cycle: { //each month
         type: String,
         trim: true
     },
