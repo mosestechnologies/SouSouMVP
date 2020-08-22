@@ -19,7 +19,6 @@ const group = new Schema({
     duration: {//1 year
         type: String,
         required: true,
-        unique: true,
         trim: true
     },
     target_amount: {//$1200 in total

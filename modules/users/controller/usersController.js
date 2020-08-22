@@ -54,7 +54,7 @@ exports.generateGroupReferral = async (req, res) => {
 	try {
 		//Referral link could look for example like this: /register?referrer=${_id}, where ${_id} is user unique ID.
 		//when someone want to join a group use => referral/:userId/:groupId
-		let endpoint = 'localhost:5000/';//TODO: change it for production
+		let endpoint = 'localhost:5000/'; //  TODO: change it for production
 		let userID = req.params.userID;
 		let groupID = req.params.groupID;
 		let responseJSON = {
