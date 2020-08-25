@@ -5,7 +5,10 @@ exports.create = async (req, res) => {
 	try {
 		console.log("Request: ", req.body);
 		const data = await Group.insertMany(req.body)
-		res.status(302).send("group successfully Created");
+		return res.status(302).json({
+			message: "group successfully Created",
+			result: data
+		});
 	} catch (message) {
 		console.log("Error: ", message);
 		res.json({ message: message });
@@ -29,85 +32,75 @@ exports.get_groups = async (req, res) => {
 };
 
 exports.join_group = async (req, res) => {
-<<<<<<< HEAD
-	try{
-=======
 	try {
->>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
 		let userID = req.params.userID;
 		let groupID = req.params.groupID;
 		//get the group of given group ID
 		const group = await Group.findById(groupID);
-		let memberLimit = group.members_limit;
+		if (group) {
+			let memberLimit = group.members_limit;
 
-		//  Check if already joined
-		let membersArray = Object.values(group.members);
-		for (const member of membersArray) {
-<<<<<<< HEAD
-			if (req.body.userID === member.toString())
-			{
-				return res.json({Error: "Already Joined"});
-=======
-			if (req.body.userID === member.toString()) {
-				let responseJSON = {
-					message: "Already Joined.",
-					success: false
+			//  Check if already joined
+			let membersArray = Object.values(group.members);
+			for (const member of membersArray) {
+				if (req.body.userID === member.toString()) {
+					return res.json({ Error: "Already Joined" });
 				}
-				return res.json(responseJSON);
->>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
 			}
-		}
 
-		let currentNumberOfMember = group.members.length;
-		if (currentNumberOfMember < memberLimit) {
-			//means there is still a place
-			//get new user's details from POST body
-			let newUserID = req.body.userID;
-			const result = await Group.findByIdAndUpdate(groupID, { $push: { members: newUserID } });
-			if (result) {
+			let currentNumberOfMember = group.members.length;
+			if (currentNumberOfMember < memberLimit) {
+				//means there is still a place
+				//get new user's details from POST body
+				let newUserID = req.body.userID;
+				const result = await Group.findByIdAndUpdate(groupID, { $push: { members: newUserID } });
+				if (result) {
+					currentNumberOfMember++;
+					if (currentNumberOfMember == memberLimit) {
+						let cycleJson = {
+							cycle_number: 0,
+							payment_arrived: [],
+							total_arrived_payment: 0,
+							current_status: "OnGoing"
+						}
 
-				//here check if the group is now full, then start the first cycle.
-				group = await Group.findById(groupID);
-				currentNumberOfMember = group.members.length;
-				if (currentNumberOfMember == memberLimit) {
-					let cycleJson = {
-						cycle_number: 0,
-						payment_arrived: [],
-						total_arrived_payment: 0,
-						current_status: "OnGoing"
+						await Group.findByIdAndUpdate(groupID, { $push: { cycle_status: cycleJson } })
+						console.log("CYCLE STARTED");
+
 					}
 
-					await Group.findByIdAndUpdate(groupID, { $push: { cycle_status: cycleJson } })
-					console.log("CYCLE STARTED");
+					let responseJSON = {
+						message: "Successfully joined group",
+						result: result,
+						success: true
+					}
 
+					return res.status(200).json(responseJSON);
+				} else {
+					let responseJSON = {
+						message: "Error adding user into group.",
+						success: false
+					}
+					return res.status(403).json(responseJSON);
 				}
-
-				let responseJSON = {
-					message: "Successfully joined group",
-					result: result,
-					success: true
-				}
-
-				res.status(200).json(responseJSON);
 			} else {
 				let responseJSON = {
-					message: "Error adding user into group.",
+					message: "Group is full",
 					success: false
 				}
-				res.status(403).json(responseJSON);
-			}
-		} else {
-			let responseJSON = {
-				message: "Group is full",
-				success: false
-			}
 
-			res.status(403).json(responseJSON);
+				return res.status(403).json(responseJSON);
+			}
+		}
+		else{
+			return res.status(404).json({
+				message: "Invalid Group",
+				success: false
+			})
 		}
 	} catch (err) {
-		res.json(err);
+		return res.json(err);
 	}
-<<<<<<< HEAD
 };
 
 exports.loom = async (req, res) => {
@@ -123,8 +116,6 @@ exports.loom = async (req, res) => {
 	 *
 	*/
 };
-=======
-}
 
 exports.test_payment = async (req, res) => {
 	let userID = req.params.userID;
@@ -166,7 +157,7 @@ exports.test_payment = async (req, res) => {
 
 						await Group.findByIdAndUpdate(groupID, { $push: { cycle_status: newCycleJSON } })
 						console.log("NEW CYCLE STARTED");
-					}else{
+					} else {
 						console.log("LAST CYCLE");
 					}
 					return res.status(200).json({
@@ -214,4 +205,3 @@ exports.test_payment = async (req, res) => {
 	}
 
 }
->>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
