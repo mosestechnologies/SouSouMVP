@@ -104,12 +104,14 @@ exports.test_payment = async (req, res) => {
 	let groupID = req.params.groupID;
 
 	let group = await Group.findById(groupID);
-
+	let isLastCycle = false;
 	//check if the user belongs to this group
 	if (group.members.includes(userID)) {
 		//get the current cycle of payment...
 		let currentCycle = group.cycle_status.length - 1;
-
+		if (currentCycle == group.members.length - 1) {
+			isLastCycle = true;
+		}
 		//check if the user has already paid or not
 		let cycle_status = group.cycle_status;
 		let membersWhoPaid = cycle_status[currentCycle].payment_arrived;
@@ -127,20 +129,24 @@ exports.test_payment = async (req, res) => {
 				cycle_status[currentCycle].current_status = "Completed";
 				let result = await Group.findByIdAndUpdate(groupID, { cycle_status: cycle_status });
 				if (result) {
-					let newCycleJSON = {
-						cycle_number: currentCycle + 1,
-						payment_arrived: [],
-						total_arrived_payment: 0,
-						current_status: "OnGoing"
-					}
+					if (!isLastCycle) {
+						let newCycleJSON = {
+							cycle_number: currentCycle + 1,
+							payment_arrived: [],
+							total_arrived_payment: 0,
+							current_status: "OnGoing"
+						}
 
-					await Group.findByIdAndUpdate(groupID, { $push: { cycle_status: newCycleJSON } })
-					console.log("NEW CYCLE STARTED");
-					return  res.status(200).json({
+						await Group.findByIdAndUpdate(groupID, { $push: { cycle_status: newCycleJSON } })
+						console.log("NEW CYCLE STARTED");
+					}else{
+						console.log("LAST CYCLE");
+					}
+					return res.status(200).json({
 						message: "Successfully received payment.",
 						success: true
 					})
-				}else{
+				} else {
 					return res.status(500).json({
 						message: "Internal server error occured.",
 						success: false
@@ -150,9 +156,9 @@ exports.test_payment = async (req, res) => {
 				//continue with this cycle as not all payments are received
 				cycle_status[currentCycle].current_status = "OnGoing";
 				let result = await Group.findByIdAndUpdate(groupID, { cycle_status: cycle_status });
-				if (result) {					
+				if (result) {
 					//success
-					return  res.status(200).json({
+					return res.status(200).json({
 						message: "Successfully received payment.",
 						success: true
 					})
@@ -165,7 +171,7 @@ exports.test_payment = async (req, res) => {
 				}
 			}
 
-		}else{
+		} else {
 			res.status(400).json({
 				message: "Payment already received.",
 				success: false
