@@ -29,11 +29,7 @@ exports.get_groups = async (req, res) => {
 };
 
 exports.join_group = async (req, res) => {
-<<<<<<< HEAD
-	try{
-=======
 	try {
->>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
 		let userID = req.params.userID;
 		let groupID = req.params.groupID;
 		//get the group of given group ID
@@ -43,18 +39,12 @@ exports.join_group = async (req, res) => {
 		//  Check if already joined
 		let membersArray = Object.values(group.members);
 		for (const member of membersArray) {
-<<<<<<< HEAD
-			if (req.body.userID === member.toString())
-			{
-				return res.json({Error: "Already Joined"});
-=======
 			if (req.body.userID === member.toString()) {
 				let responseJSON = {
 					message: "Already Joined.",
-					success: false
+					success: falurlse
 				}
 				return res.json(responseJSON);
->>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
 			}
 		}
 
@@ -107,23 +97,6 @@ exports.join_group = async (req, res) => {
 	} catch (err) {
 		res.json(err);
 	}
-<<<<<<< HEAD
-};
-
-exports.loom = async (req, res) => {
-	/**
-	 * verify payment
-	 * list of members
-	 * payment status/ pending payments
-	 * what members are paid / remaining members
-	 * Slecting new winner
-	 * paying the winner (Make payments)
-	 * Making sure everyone is paid only once
-	 *
-	 *
-	*/
-};
-=======
 }
 
 exports.test_payment = async (req, res) => {
@@ -177,7 +150,7 @@ exports.test_payment = async (req, res) => {
 				//continue with this cycle as not all payments are received
 				cycle_status[currentCycle].current_status = "OnGoing";
 				let result = await Group.findByIdAndUpdate(groupID, { cycle_status: cycle_status });
-				if (result) {					
+				if (result) {
 					//success
 					return  res.status(200).json({
 						message: "Successfully received payment.",
@@ -208,4 +181,3 @@ exports.test_payment = async (req, res) => {
 	}
 
 }
->>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
