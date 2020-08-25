@@ -308,6 +308,43 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:5000/group/create",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmNDAwZmI5MDNhYTM1MmUxODRhMWY3ZSIsInVzZXJuYWVtIjoic2dhcnJpc2g2IiwiaWF0IjoxNTk4MDMzODYwfQ.HAmWFOTQLKwvWOZb8apiDxiMA7zdJOygKx57drXVovo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"\",\r\n    \"members\": \"\",\r\n    \"created_by\": \"\",\r\n    \"duration\": \"\",\r\n    \"target_amount\": \"\",\r\n    \"payment_frequency\": \"\",\r\n    \"payment_cycle\": \"\",\r\n    \"members_limit\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/group/create",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"group",
+						"create"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
