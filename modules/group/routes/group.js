@@ -10,4 +10,6 @@ router.get('/get',controller.get_groups )
 
 router.post('/joingroup/:userID/:groupID', controller.join_group);
 
+router.post('/testpayment/:groupID/:userID', controller.test_payment);
+
 module.exports =  router;
