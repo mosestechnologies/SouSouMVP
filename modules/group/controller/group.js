@@ -10,7 +10,7 @@ exports.create = async (req, res) => {
 		console.log("Error: ", message);
 		res.json({ message: message });
 	}
-}
+};
 
 exports.get_groups = async (req, res) => {
 	try {
@@ -26,10 +26,14 @@ exports.get_groups = async (req, res) => {
 		console.log("Error: ", message);
 		res.json({ message: error })
 	}
-}
+};
 
 exports.join_group = async (req, res) => {
+<<<<<<< HEAD
+	try{
+=======
 	try {
+>>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
 		let userID = req.params.userID;
 		let groupID = req.params.groupID;
 		//get the group of given group ID
@@ -39,12 +43,18 @@ exports.join_group = async (req, res) => {
 		//  Check if already joined
 		let membersArray = Object.values(group.members);
 		for (const member of membersArray) {
+<<<<<<< HEAD
+			if (req.body.userID === member.toString())
+			{
+				return res.json({Error: "Already Joined"});
+=======
 			if (req.body.userID === member.toString()) {
 				let responseJSON = {
 					message: "Already Joined.",
 					success: false
 				}
 				return res.json(responseJSON);
+>>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270
 			}
 		}
 
@@ -97,6 +107,23 @@ exports.join_group = async (req, res) => {
 	} catch (err) {
 		res.json(err);
 	}
+<<<<<<< HEAD
+};
+
+exports.loom = async (req, res) => {
+	/**
+	 * verify payment
+	 * list of members
+	 * payment status/ pending payments
+	 * what members are paid / remaining members
+	 * Slecting new winner
+	 * paying the winner (Make payments)
+	 * Making sure everyone is paid only once
+	 *
+	 *
+	*/
+};
+=======
 }
 
 exports.test_payment = async (req, res) => {
@@ -187,3 +214,4 @@ exports.test_payment = async (req, res) => {
 	}
 
 }
+>>>>>>> dab36ce5408ed249f1ba2ea11c3200571a4b2270

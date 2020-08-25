@@ -1,15 +1,17 @@
 /* --------------------------------- Imports -------------------------------- */
 require('dotenv').config({debug: true});
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 const app = express();
 
 //  Importing  routes
 const usersRoutes = require('./modules/users/routes/users');  // Users routes import
 const groupRoutes = require('./modules/group/routes/group');
 const authRoute = require('./modules/auth/auth');
-const morgan = require('morgan');
+const paymentRoutes = require('./modules/payment/routes/payment');
 
 /* ------------------------------- Middleware ------------------------------- */
 
@@ -19,12 +21,15 @@ app.use(morgan('combined'));  // Output to console the request routes + status
 
 /* --------------------------------- Routes --------------------------------- */
 
+app.use('/payment', express.static(path.join(__dirname, 'static')));
+
 app.use('/users', usersRoutes);  // Connecting to Products
 app.use('/group', groupRoutes);
 app.use('/api/auth', authRoute); // Connected to Authentication
+app.use('/payment', paymentRoutes);
 
 app.get("/", (req, res) => {
-    res.json({'Success': 'Welcome home'})
+    res.json({'Success': 'Welcome home'});
 })
 
 /* -------------------------------- Database -------------------------------- */
