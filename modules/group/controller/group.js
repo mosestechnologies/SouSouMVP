@@ -112,7 +112,7 @@ exports.loom = async (req, res) => {
 	 * Slecting new winner
 	 * paying the winner (Make payments)
 	 * Making sure everyone is paid only once
-	 *
+	 * The group member who got payment cannot receive payment untill he paid for the next cycle
 	 *
 	*/
 };

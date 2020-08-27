@@ -38,18 +38,20 @@ exports.login = async (req, res)=>{
         const checkEmail = await UsersModel.findOne({email : req.body.email});  // Verifying Email
         if (checkEmail) // If valid Email, Else Throw Error
         {
+            console.log(req.body)
             // Verifying Password
             const checkPassword = await passwordHashing.compare(req.body.password, checkEmail.password);
             console.log("Password", checkPassword);
             if(checkPassword) // if Valid Password, Else Throw Error
             {
+                console.log(req.body)
                 const token = jwt.sign({
                         id: checkEmail._id,
                         usernaem: checkEmail.username
                     },
                     process.env.TOKEN_SECRET
                 );
-                res.header("auth-token", token).json({'Welcome' : 'Successfully loggedIn', 'Token': token});
+                res.header("auth-token", token).json({msg : 'Successfully loggedIn', 'Token': token});
             }
             else throw({'Error': 'Invalid Credentials'});
         }

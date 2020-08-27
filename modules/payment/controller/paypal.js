@@ -20,7 +20,6 @@ var createPay = ( payment ) => {
     });
 }
 
-
 exports.paymentHome = (req, res) => {
     res.redirect('/index.html');
 };
@@ -30,7 +29,7 @@ exports.paymentProcessor = ( req , res ) => {
     var payment = {
         "intent": "authorize",
         "payer": {
-            "payment_method": "paypal"
+            "payment_method": "paypal",
         },
         "redirect_urls": {
             "return_url": "http://127.0.0.1:5000/payment/success",
@@ -38,11 +37,12 @@ exports.paymentProcessor = ( req , res ) => {
         },
         "transactions": [{
             "amount": {
-                "total": 100.00,
-                "currency": "USD"
+                "total": 100.00, // TODO: Make it dynamic
+                "currency": "USD",
             },
             "description": " a book on mean stack "
-        }]
+        }],
+        "application_context": { shipping_preference: 'NO_SHIPPING' }
     }
 
 	// call the create Pay method
@@ -63,7 +63,7 @@ exports.paymentProcessor = ( req , res ) => {
         })
         .catch( ( err ) => {
             console.log( err );
-            res.redirect('/err');
+            res.redirect('/payment/failed');
         });
 };
 
@@ -71,6 +71,12 @@ exports.paymentProcessor = ( req , res ) => {
 exports.success = (req ,res ) => {
     console.log(req.query);
     // console.log(req.body);
+    console.log(req.params);
+    // {
+    //     paymentId: 'PAYID-L5CX7GA69475542YB692820K',
+    //     token: 'EC-57Y822113X441031P',
+    //     PayerID: 'ABNFPMH7TH83W'
+    // }
     res.json({
         message: "Payment successfully processed"
     });

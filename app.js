@@ -7,6 +7,9 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const app = express();
 
+var cors = require('cors')
+
+
 //  Importing  routes
 const usersRoutes = require('./modules/users/routes/users');  // Users routes import
 const groupRoutes = require('./modules/group/routes/group');
@@ -17,8 +20,8 @@ const paymentRoutes = require('./modules/payment/routes/payment');
 
 app.use(bodyParser.json());  // parse application/json
 app.use(bodyParser.urlencoded({ extended: true }))  // parse application/x-www-form-urlencoded
-app.use(morgan('combined'));  // Output to console the request routes + status
-
+app.use(morgan('combined'));  // Outut to console the request routes + status
+app.use(cors()) // Use this after the variable declaration
 /* --------------------------------- Routes --------------------------------- */
 
 app.use('/payment', express.static(path.join(__dirname, 'static')));
