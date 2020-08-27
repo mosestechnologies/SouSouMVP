@@ -8,6 +8,7 @@ const passwordHashing = require('bcrypt');
 
 exports.register = async (req, res)=>{
     // Password Hashing
+    console.log(req.body);
     const salt = await passwordHashing.genSalt(10);
     const hashedPassword = await passwordHashing.hash(req.body.password, salt); // Generating Hash
 

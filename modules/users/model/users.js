@@ -28,11 +28,7 @@ const users = new Schema({
     date: {
         type: String,
     },
-    unique_id: {
-        type: String,
-        required: true,
-        unique: true
-    },
+
     status: {
         type: String,
     },
