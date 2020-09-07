@@ -25,16 +25,16 @@ app.use(morgan('combined'));  // Outut to console the request routes + status
 app.use(cors()); // Use this after the variable declaration
 /* --------------------------------- Routes --------------------------------- */
 
-app.use('/payment', express.static(path.join(__dirname, 'static')));
+app.use('/', express.static(path.join(__dirname, 'client/build')));
 
 app.use('/users', usersRoutes);  // Connecting to Products
 app.use('/group', groupRoutes);
 app.use('/api/auth', authRoute); // Connected to Authentication
 app.use('/payment', paymentRoutes);
 
-app.get("/", (req, res) => {
-    res.json({'Success': 'Welcome home'});
-})
+// app.get("/", (req, res) => {
+//     res.json({'Success': 'Welcome home'});
+// })
 
 /* -------------------------------- Database -------------------------------- */
 
