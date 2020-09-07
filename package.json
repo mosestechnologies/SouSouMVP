@@ -33,7 +33,10 @@
     "paypal-rest-sdk": "^1.8.1",
     "react-pro-sidebar": "^0.4.4",
     "reactstrap": "^8.5.1",
-    "yup": "^0.29.3"
+    "yup": "^0.29.3",
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "chalk": "^4.1.0",
