@@ -31,7 +31,9 @@ app.use('/users', usersRoutes);  // Connecting to Products
 app.use('/group', groupRoutes);
 app.use('/api/auth', authRoute); // Connected to Authentication
 app.use('/payment', paymentRoutes);
-
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 // app.get("/", (req, res) => {
 //     res.json({'Success': 'Welcome home'});
 // })
