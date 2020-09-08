@@ -25,7 +25,12 @@ app.use(morgan('combined'));  // Outut to console the request routes + status
 app.use(cors()); // Use this after the variable declaration
 /* --------------------------------- Routes --------------------------------- */
 
-app.use('/', express.static(path.join(__dirname, 'client/build')));
+
+
+if(process.env.NODE_ENV === 'production'){
+    //set static folder
+    app.use('/', express.static(path.join(__dirname, 'client/build')));
+}
 
 app.use('/users', usersRoutes);  // Connecting to Products
 app.use('/group', groupRoutes);
