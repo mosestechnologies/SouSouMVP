@@ -32,6 +32,7 @@ app.use('/group', groupRoutes);
 app.use('/api/auth', authRoute); // Connected to Authentication
 app.use('/payment', paymentRoutes);
 app.get('*', (req,res) =>{
+	console.log("----- * PATH -----", req);
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 // app.get("/", (req, res) => {

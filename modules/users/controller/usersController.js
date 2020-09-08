@@ -17,17 +17,26 @@ exports.add = async (req, res) => {
 exports.find = async (req, res) => {
 	console.log("Request: ", req.params.id);
 	try {
-		const user = await UsersModel.findOne()
-			.where("unique_id")
-			.equals(req.params.id)
+		const user = await UsersModel.findById(req.params.id)
+
 		console.log(typeof(user));
 		if (user) {
-			res.json(user)
+			console.log("User Profile:>> ",user);
+			const userData = {
+				_id: user._id,
+				first_name: user.first_name,
+				last_name: user.last_name,
+				username: user.username,
+				email: user.email
+			}
+			console.log("User Profile Data:>> ", userData);
+			res.status(200).json(userData);
 		} else {
-			res.json({ unique_id: "No user found" })
+			res.status(400).json({ unique_id: "No user found" });
 		}
 	} catch (error) {
-		res.json(error)
+		console.log('error finding user: ', error);
+		res.status(400).json(error);
 	}
 }
 

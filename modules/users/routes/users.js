@@ -10,10 +10,10 @@ router.post('/', controller.add);
 router.get('/find-user/:id', validate, controller.find);
 
 	// Delete user route
-router.delete('/delete-user/:id', controller.delete);
+router.delete('/delete-user/:id', validate, controller.delete);
 
 	// Udpdate user route
-router.put('/update', controller.update);
+router.put('/update', validate, controller.update);
 
 router.get('/referral/:userID/:groupID', controller.generateGroupReferral);
 
