@@ -30,7 +30,7 @@ app.use(cors()); // Use this after the variable declaration
 
 if(process.env.NODE_ENV === 'production'){
     //set static folder
-    app.use('/', express.static(path.join(__dirname, 'client/build')));
+    app.use(express.static(path.join(__dirname, 'client/build')));
 }
 
 app.use('/users', usersRoutes);  // Connecting to Products
