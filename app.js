@@ -46,7 +46,7 @@ app.get('*', (req,res) =>{
 // })
 
 /* -------------------------------- Database -------------------------------- */
-
+console.log(process.env.CONNECT_DB);
 mongoose.connect(
 	process.env.CONNECT_DB,
 	{
