@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const app = express();
 const chalk = require('chalk');
+const port = process.env.PORT || 5000;
 
 var cors = require('cors');
 
@@ -58,7 +59,6 @@ mongoose.connect(
 
 /* --------------------------------- server --------------------------------- */
 
-const port = process.env.PORT || 8000;
 app.listen(port, ()=>{
 	console.log(chalk.red.inverse(`<<<  Sever Started  >>> on PORT: ${chalk.blue(port)}`));
 });
