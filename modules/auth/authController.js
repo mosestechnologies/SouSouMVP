@@ -37,34 +37,32 @@ exports.register = async (req, res)=>{
 
 exports.login = async (req, res)=>{
     console.log(JSON.stringify(req.body, undefined , 4) );
-    console.log("::: LOGIN REQUEST RECEIVED::::");
-    res.send("LOGGED IN ");
-    // try {
-    //     const checkEmail = await UsersModel.findOne({email : req.body.email});  // Verifying Email
-    //     if (checkEmail) // If valid Email, Else Throw Error
-    //     {
-    //         console.log("AFTER CONNECTION: ", req.body)
-    //         // Verifying Password
-    //         const checkPassword = await passwordHashing.compare(req.body.password, checkEmail.password);
-    //         console.log("Password", checkPassword);
-    //         if(checkPassword) // if Valid Password, Else Throw Error
-    //         {
-    //             console.log(req.body)
-    //             const token = jwt.sign({
-    //                     id: checkEmail._id,
-    //                     usernaem: checkEmail.username
-    //                 },
-    //                 process.env.TOKEN_SECRET
-    //             );
-    //             const user = {id: checkEmail._id, email: checkEmail.email};
-    //             res.header("auth-token", token).json({msg : 'Successfully loggedIn', 'token': token, user: user});
-    //         }
-    //         else throw({'Error': 'Invalid Credentials'});
-    //     }
-    //     else{
-    //         throw({'Error': 'Invalid Credentials'});
-    //     }
-    // } catch (error) {
-    //     res.status(400).send(error);
-    // }
+    try {
+        const checkEmail = await UsersModel.findOne({email : req.body.email});  // Verifying Email
+        if (checkEmail) // If valid Email, Else Throw Error
+        {
+            console.log("AFTER CONNECTION: ", req.body)
+            // Verifying Password
+            const checkPassword = await passwordHashing.compare(req.body.password, checkEmail.password);
+            console.log("Password", checkPassword);
+            if(checkPassword) // if Valid Password, Else Throw Error
+            {
+                console.log(req.body)
+                const token = jwt.sign({
+                        id: checkEmail._id,
+                        usernaem: checkEmail.username
+                    },
+                    process.env.TOKEN_SECRET
+                );
+                const user = {id: checkEmail._id, email: checkEmail.email};
+                res.header("auth-token", token).json({msg : 'Successfully loggedIn', 'token': token, user: user});
+            }
+            else throw({'Error': 'Invalid Credentials'});
+        }
+        else{
+            throw({'Error': 'Invalid Credentials'});
+        }
+    } catch (error) {
+        res.status(400).send(error);
+    }
 };

@@ -54,7 +54,14 @@ mongoose.connect(
         useUnifiedTopology: true,
         useCreateIndex: true,
 	},
-	() => console.log(chalk.green.inverse('<<<  Database connected  >>>'))
+	(error) => {
+		if (error){
+			console.log("Error Connecting");
+		}
+		else {
+			console.log(chalk.green.inverse('<<<  Database connected  >>>'));
+		}
+	}
 );
 
 /* --------------------------------- server --------------------------------- */
