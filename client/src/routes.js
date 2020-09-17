@@ -12,31 +12,24 @@ var routes = [
   {
     path: "/index",
     name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
+    //icon: "ni ni-tv-2 text-primary",
     component: Index,
     layout: "/admin"
   },
   {
     path: "/create-group",
     name: "Create Group",
-    icon: "ni ni-tv-2 text-primary",
+    //icon: "ni ni-tv-2 text-primary",
     component: CreateGroup,
     layout: "/admin"
   },
   {
     path: "/group",
     name: "Groups",
-    icon: "ni ni-tv-2 text-primary",
+    //icon: "ni ni-tv-2 text-primary",
     component: Groups,
     layout: "/admin"
   },
-  // {
-  //   path: "/group",
-  //   name: "Groups",
-  //   icon: "ni ni-tv-2 text-primary",
-  //   component: Groups,
-  //   layout: "/admin"
-  // },
   // {
   //   path: "/icons",
   //   name: "Icons",
@@ -51,13 +44,13 @@ var routes = [
   //   component: Maps,
   //   layout: "/admin"
   // },
-  // {
-  //   path: "/user-profile",
-  //   name: "User Profile",
-  //   icon: "ni ni-single-02 text-yellow",
-  //   component: Profile,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/user-profile",
+    name: "User Profile",
+    icon: "ni ni-single-02 text-yellow",
+    component: Profile,
+    layout: "/admin"
+  },
   // {
   //   path: "/tables",
   //   name: "Tables",

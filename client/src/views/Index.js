@@ -56,7 +56,7 @@ class Index extends React.Component {
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
-          <Row>
+          {/* <Row>
             <Col className="mb-5 mb-xl-0" xl="8">
               <Card className="bg-gradient-default shadow">
                 <CardHeader className="bg-transparent">
@@ -99,7 +99,9 @@ class Index extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  {/* Chart */}
+
+                  // CHART
+
                   <div className="chart">
                     <Line
                       data={chartExample1[this.state.chartExample1Data]}
@@ -123,7 +125,9 @@ class Index extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  {/* Chart */}
+
+                  // CHART
+
                   <div className="chart">
                     <Bar
                       data={chartExample2.data}
@@ -321,7 +325,7 @@ class Index extends React.Component {
                 </Table>
               </Card>
             </Col>
-          </Row>
+          </Row> */}
         </Container>
       </>
     );

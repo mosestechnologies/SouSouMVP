@@ -1,22 +1,5 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import Axios from 'axios';
 // reactstrap components
 import {
   Button,
@@ -33,8 +16,38 @@ import {
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 
-class Profile extends React.Component {
-  render() {
+const Profile = () => {
+  const [userProfile, setUserProfile] = useState({});
+
+  useEffect(()=>{
+    console.log('Profile');
+    const user = JSON.parse(localStorage.getItem('user') || null)
+    const token =  (localStorage.getItem('auth-token') || null);
+    let header = {
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token': token
+        }
+    };
+
+    Axios.get(`/users/find-user/${user.id}`, header) // Fetching user data
+		.then((response) => {
+			// handle success
+      console.log("Profile: ", response);
+      setUserProfile({
+        email: response.data.email,
+        first_name: response.data.first_name,
+        last_name: response.data.last_name,
+        username: response.data.username,
+      })
+			return response;
+		})
+		.catch((error) => {
+			// handle error
+			console.log("Got an error: ", error);
+		});
+  }, []);
+
     return (
       <>
         <UserHeader />
@@ -45,7 +58,7 @@ class Profile extends React.Component {
               <Card className="card-profile shadow">
                 <Row className="justify-content-center">
                   <Col className="order-lg-2" lg="3">
-                    <div className="card-profile-image">
+                    {/* <div className="card-profile-image">
                       <a href="#pablo" onClick={e => e.preventDefault()}>
                         <img
                           alt="..."
@@ -53,25 +66,15 @@ class Profile extends React.Component {
                           src={require("assets/img/theme/team-4-800x800.jpg")}
                         />
                       </a>
-                    </div>
+                    </div> */}
                   </Col>
                 </Row>
                 <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                   <div className="d-flex justify-content-between">
-                    <Button
-                      className="mr-4"
-                      color="info"
-                      href="#pablo"
-                      onClick={e => e.preventDefault()}
-                      size="sm"
-                    >
+                    <Button className="mr-4" color="info" href="#pablo" onClick={e => e.preventDefault()} size="sm">
                       Connect
                     </Button>
-                    <Button
-                      className="float-right"
-                      color="default"
-                      href="#pablo"
-                      onClick={e => e.preventDefault()}
+                    <Button className="float-right" color="default" href="#pablo" onClick={e => e.preventDefault()}
                       size="sm"
                     >
                       Message
@@ -79,7 +82,7 @@ class Profile extends React.Component {
                   </div>
                 </CardHeader>
                 <CardBody className="pt-0 pt-md-4">
-                  <Row>
+                  {/* <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                         <div>
@@ -96,33 +99,33 @@ class Profile extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </Row>
+                  </Row> */}
                   <div className="text-center">
                     <h3>
-                      Jessica Jones
-                      <span className="font-weight-light">, 27</span>
+                      {`${userProfile.first_name} ${userProfile.last_name}`}
+                      {/* <span className="font-weight-light">, 27</span> */}
                     </h3>
-                    <div className="h5 font-weight-300">
+                    {/* <div className="h5 font-weight-300">
                       <i className="ni location_pin mr-2" />
                       Bucharest, Romania
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni business_briefcase-24 mr-2" />
                       Solution Manager - Creative Tim Officer
-                    </div>
+                    </div> */}
+
+                    <hr className="my-4" />
                     <div>
                       <i className="ni education_hat mr-2" />
-                      University of Computer Science
+                      {`${userProfile.email}`}
                     </div>
-                    <hr className="my-4" />
-                    <p>
+                    {/* <p>
                       Ryan — the name taken by Melbourne-raised, Brooklyn-based
-                      Nick Murphy — writes, performs and records all of his own
-                      music.
+                      Nick Murphy — writes, performs and records all of his own music.
                     </p>
                     <a href="#pablo" onClick={e => e.preventDefault()}>
                       Show more
-                    </a>
+                    </a> */}
                   </div>
                 </CardBody>
               </Card>
@@ -135,12 +138,7 @@ class Profile extends React.Component {
                       <h3 className="mb-0">My account</h3>
                     </Col>
                     <Col className="text-right" xs="4">
-                      <Button
-                        color="primary"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
-                        size="sm"
-                      >
+                      <Button color="primary" href="#pablo" onClick={e => e.preventDefault()} size="sm">
                         Settings
                       </Button>
                     </Col>
@@ -155,33 +153,26 @@ class Profile extends React.Component {
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-username"
-                            >
+                            <label className="form-control-label" htmlFor="input-username">
                               Username
                             </label>
-                            <Input
+                            <Input type="text"
                               className="form-control-alternative"
                               defaultValue="lucky.jesse"
                               id="input-username"
-                              placeholder="Username"
-                              type="text"
+                              placeholder={`${userProfile.username}`}
                             />
                           </FormGroup>
                         </Col>
                         <Col lg="6">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-email"
-                            >
+                            <label className="form-control-label" htmlFor="input-email">
                               Email address
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-email"
-                              placeholder="jesse@example.com"
+                              placeholder={`${userProfile.email}`}
                               type="email"
                             />
                           </FormGroup>
@@ -190,15 +181,12 @@ class Profile extends React.Component {
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                            <label className="form-control-label" htmlFor="input-first-name">
                               First name
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="Lucky"
+                              defaultValue={`${userProfile.first_name}`}
                               id="input-first-name"
                               placeholder="First name"
                               type="text"
@@ -207,15 +195,12 @@ class Profile extends React.Component {
                         </Col>
                         <Col lg="6">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
+                            <label className="form-control-label" htmlFor="input-last-name">
                               Last name
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="Jesse"
+                              defaultValue={`${userProfile.last_name}`}
                               id="input-last-name"
                               placeholder="Last name"
                               type="text"
@@ -233,10 +218,7 @@ class Profile extends React.Component {
                       <Row>
                         <Col md="12">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-address"
-                            >
+                            <label className="form-control-label" htmlFor="input-address">
                               Address
                             </label>
                             <Input
@@ -252,10 +234,7 @@ class Profile extends React.Component {
                       <Row>
                         <Col lg="4">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-city"
-                            >
+                            <label className="form-control-label" htmlFor="input-city">
                               City
                             </label>
                             <Input
@@ -269,10 +248,7 @@ class Profile extends React.Component {
                         </Col>
                         <Col lg="4">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-country"
-                            >
+                            <label className="form-control-label" htmlFor="input-country">
                               Country
                             </label>
                             <Input
@@ -286,10 +262,7 @@ class Profile extends React.Component {
                         </Col>
                         <Col lg="4">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-country"
-                            >
+                            <label className="form-control-label" htmlFor="input-country">
                               Postal code
                             </label>
                             <Input
@@ -326,7 +299,7 @@ class Profile extends React.Component {
         </Container>
       </>
     );
-  }
+
 }
 
 export default Profile;

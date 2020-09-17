@@ -63,7 +63,7 @@ const Groups = () => {
       const token = localStorage.getItem('auth-token');
       const id = user.id;
 
-      Axios.get(`http://localhost:5000/group/get/${id}`, {
+      Axios.get(`/group/get/${id}`, {
          headers: {
             'Content-Type': 'application/json',
             'auth-token': token

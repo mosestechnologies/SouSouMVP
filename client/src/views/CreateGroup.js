@@ -2,11 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { GlobalState } from "../context/GlobalState";
 import {
     Button, Card, CardHeader, CardBody,
-    NavItem, NavLink, Nav, Progress, Table,
+    NavItem, NavLink, Nav,
     Container,Row, Col
 } from "reactstrap";
 import Header from "components/Headers/Header.js";
 import Axios from 'axios';
+
+
+import './MessageBar.css';
 
 const CreateGroup = () => {
     // const { setUserData } = useContext(GlobalState);
@@ -26,6 +29,7 @@ const CreateGroup = () => {
 	const [payment_frequency, setFrequency] = useState();
     const [payment_cycle, setCycle] = useState();
     // const [created_by, setCreator] = useState();
+    const [createStatus, setCreateStatus] = useState();
 
 
     const createGroup = () => {
@@ -38,15 +42,17 @@ const CreateGroup = () => {
         }
         const groupData = { title, members, members_limit, target_amount, payment_frequency, payment_cycle, created_by };
         try {
-            const token = JSON.parse(localStorage.getItem('auth-token'));
+            const token = localStorage.getItem('auth-token');
             console.log(token);
-            Axios.post('http://localhost:5000/group/create', groupData, {
+            Axios.post('/group/create', groupData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'auth-token': token
                 }
             })
-            .then( response => { console.log('Group Created Successfully', response)
+            .then( response => {
+                console.log('Group Created Successfully', response);
+                setCreateStatus(true);
             }).catch(error => {
                 console.log('ERROR:>> ', error);
                 if (error.response.data.error){
@@ -62,16 +68,29 @@ const CreateGroup = () => {
                 //console.log('ERROR MESSAGE:>> ', error.response.data.error.message);
             });
         } catch (error) {
-
+            console.log('ERROR CREATING GROUP: ', error);
         }
 
     };
+
+    useEffect (() => {
+        const successMessage = () => {
+            if (createStatus === true){
+                return (
+                    <div className="success">
+                        Group Successfully Created
+                    </div>
+                )
+            }
+        }
+    }, [createStatus]);
 
     return (
         <div>
             <Header />
             <Container className="mt--7" fluid>
                 <Row>
+
                     <div className="col">
                         <Card className="shadow border-0">
                         <div className="card" >
@@ -106,10 +125,18 @@ const CreateGroup = () => {
 
 {/*<!-- ------------------------------ form end ------------------------------- -->*/}
 
+                                    <div >
+                                        {
+                                            createStatus ? (
+                                                <div className="success">
+                                                    Group Successfully Created
+                                                </div>
+                                            ) : (<div></div>)
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                         </Card>
                     </div>
                 </Row>

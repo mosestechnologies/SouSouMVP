@@ -6,7 +6,7 @@ import { Container } from "reactstrap";
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-
+import Group from "../views/Group";
 import routes from "routes.js";
 
 class Admin extends React.Component {
@@ -62,6 +62,7 @@ class Admin extends React.Component {
           />
           <Switch>
             {this.getRoutes(routes)}
+            <Route path="/group/:gid" render={ props => <Group {...props} /> } />
             <Redirect from="*" to="/admin/index" />
           </Switch>
           <Container fluid>

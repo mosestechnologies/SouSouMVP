@@ -34,6 +34,9 @@ function Register () {
 	const [password, setPassword] = useState();
 	const [email, setEmail] = useState();
 	// const [error, setError] = useState();
+
+  const [registerStatus, setRegisterStatus] = useState(false);
+
 	const { state } = useContext(AuthContext);
   // const navigate = useNavigate();
 
@@ -41,19 +44,16 @@ function Register () {
 		e.preventDefault();
 
     const newUser = { first_name, last_name, username, password, email };
-    await Axios.post("http://localhost:5000/api/auth/register", newUser)
+    await Axios.post("https://sousou-app.herokuapp.com/api/auth/register", newUser)
     .then(response => {
       console.log('Registered Successfully', response);
       // LogginIn
-      Axios.post("http://localhost:5000/api/auth/login", {
+      setRegisterStatus(true);
+      Axios.post("https://sousou-app.herokuapp.com/api/auth/login", {
         email,
         password,
       }).then( response => {
         console.log('LoggedIn', response);
-        // setUserData({
-        //   token: response.data.token,
-        //   user: response.data.user,
-        // });
         localStorage.setItem('auth-token', response.data.token); // saving token to localstorage
         localStorage.setItem('login', true);
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -63,12 +63,6 @@ function Register () {
     })
     .catch(error => console.log('Error signing up', error));
 
-    // setUserData({
-    //   token: loginRes.token,
-    //   user: loginRes.user,
-    // });
-    // localStorage.setItem("auth-token", loginRes.token);
-    // navigate("/");
 	};
 
     return (
@@ -155,6 +149,13 @@ function Register () {
                       Create account
                     </Button>
                   </div>
+                  {
+                    registerStatus ? (
+                      <div className="success">
+                        Successfully Registered
+                      </div>
+                    ) : (<div></div>)
+                  }
                 </Form>
 
 {/* ------------------------------- FORM Start ------------------------------- */}

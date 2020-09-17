@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/GlobalState";
 
@@ -22,6 +22,7 @@ import {
 
 const AdminNavbar = (props) => {
   const { dispatch } = useContext(AuthContext);
+  const [ username, setUsername ] = useState('');
   const logout = () => {
     console.log("LOGOUT");
     localStorage.removeItem("auth-token");
@@ -32,6 +33,11 @@ const AdminNavbar = (props) => {
     })
     props.history.push('/auth/index');
   }
+
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem('user'));
+    setUsername(user.username)
+  },[]);
 
     return (
       <>
@@ -67,7 +73,7 @@ const AdminNavbar = (props) => {
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        Jessica Jones
+                        { username }
                       </span>
                     </Media>
                   </Media>

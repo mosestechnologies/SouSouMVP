@@ -2,7 +2,7 @@ import Axios from 'axios';
 
 export const login = (data, callback, dispatch) => {
 
-	return Axios.post("http://localhost:5000/api/auth/login", data)
+	return Axios.post("/api/auth/login", data)
 		.then((response) => {
 			// handle success
 			console.log(response);

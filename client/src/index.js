@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect, HashRouter } from "react-router-dom";
 import { AuthContext, reducer, initialState } from "./context/GlobalState";
 import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
@@ -33,13 +33,16 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={ { state, dispatch } }>
+      <HashRouter>
       <BrowserRouter>
         <Switch>
           <ProtectedRoute path="/admin" render={ props => <AdminLayout {...props} /> } />
           <Route path="/auth" render={ props => <AuthLayout {...props} /> } />
           <Redirect from="/" to="/admin/index" />
+          <Route component={() => (<div>404 Not found </div>)} />
         </Switch>
       </BrowserRouter>
+      </HashRouter>
     </AuthContext.Provider>
   )
 };

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 // reactstrap components
 import {
 	Button,
@@ -16,10 +16,11 @@ import {
 } from "reactstrap";
 import { AuthContext } from "../../context/GlobalState";
 import { login } from '../../utils/auth';
+import '../MessageBar.css';
 
 function Login (props) {
-
-	const { dispatch } = useContext(AuthContext);
+	
+	const { state, dispatch } = useContext(AuthContext);
 	const initialState = {
         email: "",
         password: "",
@@ -47,15 +48,18 @@ function Login (props) {
 			email: loginData.email,
 			password: loginData.password
 		};
-
 		const setstate = async (token, loginStatus, userData) => {
 			// console.log('response', token, loginStatus, userData);
 			props.history.push('/admin/index');  // redirecting
 		}
 		login(loginUserData, setstate, dispatch); // passing user data + callback + dispatch action
-
 	}
 
+	useEffect(()=>{
+		if (state.isAuthenticated){
+			props.history.push('/admin/index');
+		}
+	}, []);
 	return (
     <>
 		<Col lg="5" md="7">
@@ -107,6 +111,13 @@ function Login (props) {
 								<Button className="my-4" color="primary" type="button" onClick={submit}>
 									Sign in
 								</Button>
+								{
+									state.isAuthenticated ? (
+										<div className="success">
+											Successfully Loggedin
+										</div>
+									) : (<div></div>)
+								}
 							</div>
 						</Form>
 
