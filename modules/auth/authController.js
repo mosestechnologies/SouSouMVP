@@ -54,7 +54,7 @@ exports.login = async (req, res)=>{
                     },
                     process.env.TOKEN_SECRET
                 );
-                const user = {id: checkEmail._id, email: checkEmail.email};
+                const user = {id: checkEmail._id, email: checkEmail.email, username: checkEmail.username};
                 res.header("auth-token", token).json({msg : 'Successfully loggedIn', 'token': token, user: user});
             }
             else throw({'Error': 'Invalid Credentials'});

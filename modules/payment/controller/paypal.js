@@ -25,7 +25,8 @@ exports.paymentHome = (req, res) => {
 };
 
 exports.paymentProcessor = ( req , res ) => {
-	// create payment object
+    // create payment object
+    console.log("PAYMENT: ", req.body);
     var payment = {
         "intent": "authorize",
         "payer": {
@@ -47,24 +48,24 @@ exports.paymentProcessor = ( req , res ) => {
 
 	// call the create Pay method
     createPay( payment )
-        .then( ( transaction ) => {
-            var id = transaction.id;
-            //console.log('Transaction ID: ', id);
-            var links = transaction.links;
-            //console.log('Transaction Links: ', links);
-            var counter = links.length;
-            //console.log('Links Length: ', counter);
-            while( counter -- ) {
-                if ( links[counter].method == 'REDIRECT') {
-					// redirect to paypal where user approves the transaction
-                    return res.redirect( links[counter].href )
-                }
+    .then( ( transaction ) => {
+        var id = transaction.id;
+        //console.log('Transaction ID: ', id);
+        var links = transaction.links;
+        //console.log('Transaction Links: ', links);
+        var counter = links.length;
+        //console.log('Links Length: ', counter);
+        while( counter -- ) {
+            if ( links[counter].method == 'REDIRECT') {
+                // redirect to paypal where user approves the transaction
+                return res.redirect( links[counter].href )
             }
-        })
-        .catch( ( err ) => {
-            console.log( err );
-            res.redirect('/payment/failed');
-        });
+        }
+    })
+    .catch( ( err ) => {
+        console.log( err );
+        res.redirect('/payment/failed');
+    });
 };
 
 // success page

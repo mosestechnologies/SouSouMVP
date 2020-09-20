@@ -43,11 +43,11 @@ exports.get_group = async (req, res) => {
 			exec(function (err, data) {
 				if (err) return handleError(err);
 				console.log(data);
-				res.json({ Groups: data })
+				res.json({ group: data })
 			});
 
 	} catch (error) {
-		console.log("Error: ", message);
+		console.log("Error: ", error);
 		res.json({ message: error })
 	}
 };
@@ -84,12 +84,9 @@ exports.join_group = async (req, res) => {
 							total_arrived_payment: 0,
 							current_status: "OnGoing"
 						}
-
 						await Group.findByIdAndUpdate(groupID, { $push: { cycle_status: cycleJson } })
 						console.log("CYCLE STARTED");
-
 					}
-
 					let responseJSON = {
 						message: "Successfully joined group",
 						result: result,

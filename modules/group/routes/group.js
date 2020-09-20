@@ -10,7 +10,7 @@ router.get('/get/:id', validate, controller.get_groups );
 
 router.get('/get-group/:id', controller.get_group );
 
-router.post('/joingroup/:userID/:groupID', controller.join_group);
+router.get('/joingroup/:userID/:groupID', controller.join_group);
 
 router.post('/testpayment/:groupID/:userID', validate, controller.test_payment);
 
