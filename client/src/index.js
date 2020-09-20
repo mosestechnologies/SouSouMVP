@@ -5,6 +5,7 @@ import { AuthContext, reducer, initialState } from "./context/GlobalState";
 import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 import { ProtectedRoute } from './ProtectedRoute';
+import Group from './views/Group';
 
 /** <<<  @Styles  >>> */
 import "assets/plugins/nucleo/css/nucleo.css";
@@ -38,6 +39,7 @@ const App = () => {
         <Switch>
           <ProtectedRoute path="/admin" render={ props => <AdminLayout {...props} /> } />
           <Route path="/auth" render={ props => <AuthLayout {...props} /> } />
+          <Route path="/group/:groupId" render={ props => <Group {...props} /> } />
           <Redirect from="/" to="/admin/index" />
           <Route component={() => (<div>404 Not found </div>)} />
         </Switch>

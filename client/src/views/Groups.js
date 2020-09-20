@@ -14,7 +14,8 @@ import {
 } from "reactstrap";
 import Header from "components/Headers/Header.js";
 import Axios from 'axios';
-import { AuthContext } from '../context/GlobalState'
+import { AuthContext } from '../context/GlobalState';
+import { Link } from "react-router-dom";
 import { array } from 'yup';
 
 const initialState = {
@@ -124,7 +125,6 @@ const Groups = () => {
 
                               (
 
-
                            <tbody>
                               {
                                  groupsList.map((list) => {
@@ -137,7 +137,7 @@ const Groups = () => {
                                           <Media className="align-items-center">
                                              <Media>
                                                 <span className="mb-0 text-sm">
-                                                   <a href={`http://127.0.0.1:5000/group/get-group/${list._id}`}>{list.title}</a>
+                                                   <Link to={`/group/${list._id}`}>{list.title}</Link>
                                                 </span>
                                              </Media>
                                           </Media>

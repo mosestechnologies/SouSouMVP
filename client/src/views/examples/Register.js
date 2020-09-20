@@ -13,20 +13,6 @@ import {
 import Axios from 'axios';
 import * as Yup from 'yup';
 
-const SignupSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Required'),
-  lastName: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Required'),
-  email: Yup.string()
-    .email('Invalid email')
-    .required('Required'),
-});
-
 function Register () {
   const [first_name, setFirst_name] = useState();
 	const [last_name, setLast_name] = useState();
@@ -44,12 +30,12 @@ function Register () {
 		e.preventDefault();
 
     const newUser = { first_name, last_name, username, password, email };
-    await Axios.post("https://sousou-app.herokuapp.com/api/auth/register", newUser)
+    await Axios.post("/api/auth/register", newUser)
     .then(response => {
       console.log('Registered Successfully', response);
       // LogginIn
       setRegisterStatus(true);
-      Axios.post("https://sousou-app.herokuapp.com/api/auth/login", {
+      Axios.post("/api/auth/login", {
         email,
         password,
       }).then( response => {

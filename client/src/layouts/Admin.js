@@ -62,7 +62,7 @@ class Admin extends React.Component {
           />
           <Switch>
             {this.getRoutes(routes)}
-            <Route path="/group/:gid" render={ props => <Group {...props} /> } />
+
             <Redirect from="*" to="/admin/index" />
           </Switch>
           <Container fluid>
