@@ -36,15 +36,19 @@ exports.get_groups = async (req, res) => {
 
 exports.get_group = async (req, res) => {
 	console.log(req.id);
-	console.log(req.body);
+	console.log('body', req.body);
 	try {
-		const data = await Group.find({ _id: req.params.id }).
-			populate('members').
-			exec(function (err, data) {
-				if (err) return handleError(err);
-				console.log(data);
-				res.json({ group: data })
-			});
+		const data = await Group.find({ _id: req.params.id }).populate('members');
+		console.log('DATA: ???>> ', data);
+		let membersArray = Object.values(data.members);
+		for (const member of membersArray) {
+			if (req.body.userID === member.toString()) {
+				return res.status(200).json({ group: data });
+			}
+			else{
+				return res.status(403).json('Not Allowed');
+			}
+		}
 
 	} catch (error) {
 		console.log("Error: ", error);
