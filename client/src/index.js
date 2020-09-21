@@ -6,6 +6,7 @@ import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 import { ProtectedRoute } from './ProtectedRoute';
 import Group from './views/Group';
+import JoinGroup from './views/JoinGroup';
 
 /** <<<  @Styles  >>> */
 import "assets/plugins/nucleo/css/nucleo.css";
@@ -40,6 +41,7 @@ const App = () => {
           <ProtectedRoute path="/admin" render={ props => <AdminLayout {...props} /> } />
           <Route path="/auth" render={ props => <AuthLayout {...props} /> } />
           <Route path="/group/:groupId" render={ props => <Group {...props} /> } />
+          <ProtectedRoute path="/join/:userId/:groupId" render={ props => <JoinGroup {...props} /> } />
           <Redirect from="/" to="/admin/index" />
           <Route component={() => (<div>404 Not found </div>)} />
         </Switch>

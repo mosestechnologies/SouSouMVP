@@ -16,12 +16,14 @@ const Group = (props) => {
     const [amount, setAmount] = useState();
     const { groupId } = props.match.params;
 
-    let user;
-    if (localStorage.getItem('user') === null){
-        props.history.push('/auth/login');
-    }
-    else {
-        user = JSON.parse(localStorage.getItem('user'));
+    const getUserId = () =>{
+        let user = localStorage.getItem('user');
+        if (!user){
+             return props.history.push('/auth/login');
+        }
+        else {
+            return user = JSON.parse(localStorage.getItem('user'));
+        }
     }
     const token = localStorage.getItem('auth-token');
 
@@ -36,7 +38,8 @@ const Group = (props) => {
     }
 
     useEffect(()=>{
-        if (localStorage.getItem('user') === null){
+        const user = localStorage.getItem('user');
+        if (!user){
             props.history.push('/auth/login');
         }
         Axios.get(`/group/get-group/${groupId}`, {
@@ -102,7 +105,10 @@ const Group = (props) => {
                         <div className="card-body">
                             <div className="row justify-content-center mb-4">
                                 <div className="col-lg-9 col-sm-12 mt-4 row">
-                                    <input className="col-lg-9 mr-4" type="text" disabled value={`https://www.sousou-app.herokuapp.com/joingroup/${user.id}/${groupId}`} onChange={ handleInputChange }/>
+                                    <input className="col-lg-9 mr-4" type="text" disabled
+                                        value={`https://www.sousou-app.herokuapp.com/joingroup/${getUserId()}/${groupId}`}
+                                        onChange={ handleInputChange }
+                                    />
                                     <button type="submit" onClick={ copyLink } className="col-2 btn btn-success">
                                         Copy invite Link
                                     </button>
