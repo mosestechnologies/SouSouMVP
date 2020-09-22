@@ -15,13 +15,17 @@ import {
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
+import { AuthContext } from "context/GlobalState";
 
 const Profile = () => {
   const [userProfile, setUserProfile] = useState({});
+  const {state} = React.useContext(AuthContext);
 
   useEffect(()=>{
     console.log('Profile');
-    const user = JSON.parse(localStorage.getItem('user') || null)
+    // const user = JSON.parse(localStorage.getItem('user') || null)
+    const user = state.user;
+
     const token =  (localStorage.getItem('auth-token') || null);
     let header = {
         headers: {

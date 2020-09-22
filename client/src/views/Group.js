@@ -9,15 +9,17 @@ import copy from "copy-to-clipboard";
 import Axios from 'axios';
 import paypal from 'paypal-rest-sdk';
 import PaypalExpressBtn from 'react-paypal-express-checkout';
+import { AuthContext } from 'context/GlobalState';
 
 const Group = (props) => {
     const [inviteLink, setInviteLink] = useState();
     const [groupData, setGroupData] = useState([]);
     const [amount, setAmount] = useState();
     const { groupId } = props.match.params;
+    const{state}=React.useContext(AuthContext)
 
     const getUserId = () =>{
-        let user = localStorage.getItem('user');
+        let user = localStorage.getItem('user') || state.user;
         if (!user){
              return props.history.push('/auth/login');
         }
@@ -48,8 +50,9 @@ const Group = (props) => {
                 'auth-token': token
             }
         })
-        .then( response => {
-            console.log('Group DATA Successfully', response.data.group);
+            .then(response => {
+            console.table(response);
+            console.table('Group DATA Successfully', response.data.group);
             setGroupData(response.data.group);
             setAmount(parseInt(response.data.group[0].payment_frequency));
         }).catch(error => {
