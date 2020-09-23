@@ -10,6 +10,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   Modal,
+  Label,
   Input,
   ModalHeader,
   ModalBody,
@@ -27,6 +28,7 @@ import Axios from "axios";
 import { AuthContext } from "../context/GlobalState";
 import { Link } from "react-router-dom";
 import { array, reach } from "yup";
+import { updateArrayBindingPattern } from "typescript";
 
 const initialState = {
   groups: [],
@@ -59,12 +61,46 @@ const reducer = (state, action) => {
   }
 };
 
+const initialUpdateState = {
+  groupId: null,
+  title: "",
+  membersLimit: "",
+};
 const Groups = () => {
-   const [groupsList, setGroupsList] = useState([]);
+  const [UpdateData, setUpdateData] = useState(initialUpdateState); // pass initial state
+
+  const [groupsList, setGroupsList] = useState([]);
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const { state: authState } = React.useContext(AuthContext);
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+
+  const handleOnChange = (event) => {
+    setUpdateData({
+      ...UpdateData,
+      [event.target.name]: event.target.value
+    })
+  };
+  const handleOnClick = (groupId) => {
+    setUpdateData({
+      ...UpdateData,
+      groupId: groupId,
+    });
+    toggle();
+    const updataRequest = async (e) => {
+      
+     return Axios.post(
+        `/group/update/${UpdateData.groupId}`,{
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": authState.token,
+        },UpdateData
+      });
+      
+  }
+  console.log(updataRequest);
+
+  };
   useEffect(() => {
     dispatch({
       type: "FETCH_GROUPS_REQUEST",
@@ -269,13 +305,24 @@ const Groups = () => {
                                     Edit Group Settings
                                   </ModalHeader>
                                   <ModalBody>
-                                    Title
-                                    <Input />
-                                    Members Limit
-                                    <Input />
+                                    <Label>Title</Label>
+                                    <Input
+                                      name="title"
+                                      value={UpdateData.title}
+                                      onChange={handleOnChange}
+                                    />
+                                    <Label>Members Limit</Label>
+                                    <Input
+                                      name="membersLimit"
+                                      onChange={handleOnChange}
+                                      value={UpdateData.membersLimit}
+                                    />
                                   </ModalBody>
                                   <ModalFooter>
-                                    <Button color="primary" onClick={toggle}>
+                                    <Button color="primary"
+                                      onClick={()=>handleOnClick(list._id)}
+                                    >
+                                      {console.log(UpdateData)}
                                       Save Settings
                                     </Button>{" "}
                                     <Button color="secondary" onClick={toggle}>
