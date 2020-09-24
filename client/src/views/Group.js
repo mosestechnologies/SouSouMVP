@@ -38,11 +38,15 @@ const Group = (props) => {
     }
 
     useEffect(()=>{
-        const user = localStorage.getItem('user');
+        const user = JSON.parse(localStorage.getItem('user'));
         if (!user){
             props.history.push('/auth/login');
         }
-        Axios.get(`/group/get-group/${groupId}`, {
+        console.log('user id:: ', user.id);
+        const memberID = JSON.stringify({memberID: user.id})
+        console.log('memberID id:: ', memberID);
+
+        Axios.post(`/group/get-group/${groupId}`, {memberID: user.id},{
             headers: {
                 'Content-Type': 'application/json',
                 'auth-token': token
@@ -51,7 +55,7 @@ const Group = (props) => {
         .then( response => {
             console.log('Group DATA Successfully', response.data.group);
             setGroupData(response.data.group);
-            setAmount(parseInt(response.data.group[0].payment_frequency));
+            setAmount(parseInt(response.data.group.payment_frequency));
         }).catch(error => {
             console.log('ERROR:>> ', error);
         });
@@ -86,10 +90,11 @@ const Group = (props) => {
                     <div className="card" >
                         <CardHeader className="card-header">
                             <center>
-                                { groupData.map((data, index)=><h1 key={index}>{data.title}</h1>)}
+                                {console.log('groupData', groupData)}
+                                <h1>{groupData.title}</h1>
                             </center>
                             <div className="row justify-content-end mr-7">
-                                {/* <button className="btn btn-warning btn-lg" onClick={handlePayment}>Make Payment $</button> */}
+                                {/* // TODO: Disablbe button if already paid */}
                                 <PaypalExpressBtn client={client}  currency={'USD'} total={amount}
                                     paymentOptions={paymentOptions}
                                     style= {{
@@ -99,6 +104,7 @@ const Group = (props) => {
                                         label:  'pay',
                                         height: 40
                                     }}
+                                    disabled
                                 />
                             </div>
                         </CardHeader>
@@ -126,31 +132,24 @@ const Group = (props) => {
                                         </thead>
                                         <tbody>
                                             {
-                                                groupData.map((data) => {
-                                                return (
-                                                    <>
-                                                        {
-                                                        groupData[0].members.map((member)=>{
-                                                            return (
-                                                                <>
-                                                                <tr key={member._id}>
-                                                                    <th scope="row" >
-                                                                        <Media className="align-items-center">
-                                                                            <Media>
-                                                                                <span className="mb-0 text-sm">
-                                                                                    { `${member.first_name} ${member.last_name}` }
-                                                                                    </span>
-                                                                            </Media>
-                                                                        </Media>
-                                                                    </th>
-                                                                    <td>{member.email}</td>
-                                                                </tr>
-                                                                </>
-                                                            )
-                                                        })
-                                                        }
-                                                    </>
-                                                )})
+                                            // groupData.members.map((member)=>{
+                                            //     return (
+                                            //         <>
+                                            //         <tr key={member._id}>
+                                            //             <th scope="row" >
+                                            //                 <Media className="align-items-center">
+                                            //                     <Media>
+                                            //                         <span className="mb-0 text-sm">
+                                            //                             { `${member.first_name} ${member.last_name}` }
+                                            //                             </span>
+                                            //                     </Media>
+                                            //                 </Media>
+                                            //             </th>
+                                            //             <td>{member.email}</td>
+                                            //         </tr>
+                                            //         </>
+                                            //     )
+                                            // })
                                             }
                                         </tbody>
                                     </Table>
@@ -167,25 +166,21 @@ const Group = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
-                                                groupData.map((data) => {
-                                                return (
-                                                    <tr key={data._id}>
-                                                        <th scope="row" >
-                                                            <Media className="align-items-center">
-                                                                <Media>
-                                                                    <span className="mb-0 text-sm">
-                                                                        { `${data.members_limit} ` }
-                                                                        </span>
-                                                                </Media>
-                                                            </Media>
-                                                        </th>
-                                                        <td>{data.members.length}</td>
-                                                        <td>{data.payment_frequency}</td>
-                                                        <td>{data.payment_cycle}</td>
-                                                    </tr>
-                                                )})
-                                            }
+
+                                            <tr>
+                                                <th scope="row" >
+                                                    <Media className="align-items-center">
+                                                        <Media>
+                                                            <span className="mb-0 text-sm">
+                                                                { `${groupData.members_limit} ` }
+                                                                </span>
+                                                        </Media>
+                                                    </Media>
+                                                </th>
+                                                {/* <td>{groupData.members.length}</td> */}
+                                                <td>{groupData.payment_frequency}</td>
+                                                <td>{groupData.payment_cycle}</td>
+                                            </tr>
                                         </tbody>
                                     </Table>
                                 </div>
