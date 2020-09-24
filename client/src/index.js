@@ -15,14 +15,15 @@ import "assets/scss/argon-dashboard-react.scss";
 
 const App = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  console.log('Initial State', initialState);
 
   useEffect(() => {
     console.log( 'JSON PARSE: ', JSON.parse(localStorage.getItem('user') ));
-    const user = JSON.parse(localStorage.getItem('user') || null)
-    const token =  (localStorage.getItem('auth-token') || null);
+    const user = JSON.parse(localStorage.getItem('user') || null || state.user)
+    const token = (localStorage.getItem('auth-token') || null || state.token);
+    // const user = state.user;
+    // const token = state.token;
     if(user && token){
-      console.log("USER: ", user, " TOKEN: ", token);
+      // console.log("USER: ", user, " TOKEN: ", token);
       dispatch({
         type: 'LOGIN',
         payload: {
@@ -30,8 +31,11 @@ const App = () => {
           token
         }
       })
+
     }
   }, [state.token])
+  // console.log('Initial State', initialState);
+
 
   return (
     <AuthContext.Provider value={ { state, dispatch } }>

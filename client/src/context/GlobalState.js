@@ -16,7 +16,7 @@ export const initialState = {
     user: null,
     token: null,
 };
-
+console.log(initialState);
 /**
  * a reducer (which is simply a function that takes in state
  * and action as parameters and returns a new state based on an action)
@@ -41,9 +41,10 @@ export const initialState = {
  */
 let i=0;
 export const reducer = (state, action) => {
+    console.log('this is it>>>>>',action );
     switch (action.type) {
         case "LOGIN":
-            console.log("USER ACTION: ", action.payload.user, i++ , " TOKEN ACTION: ", action.payload);
+            // console.log("USER ACTION: ", action.payload.user, i++ , " TOKEN ACTION: ", action.payload);
             localStorage.setItem("user", JSON.stringify(action.payload.user));
             localStorage.setItem('auth-token', action.payload.token); // saving token to localstorage
 			localStorage.setItem('login', true);

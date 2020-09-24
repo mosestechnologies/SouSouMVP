@@ -21,6 +21,7 @@ import '../MessageBar.css';
 function Login (props) {
 	
 	const { state, dispatch } = useContext(AuthContext);
+	console.log("this is login state",state);
 	const initialState = {
         email: "",
         password: "",
@@ -31,7 +32,7 @@ function Login (props) {
 
 	const handleInputChange = event => {
         setloginData({
-            ...loginData,
+            ...loginData, 
             [event.target.name]: event.target.value
         });
     };

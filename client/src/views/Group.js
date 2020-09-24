@@ -1,41 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Header from "components/Headers/Header.js";
 import {
-    Button, Card, CardHeader, CardBody,
-    NavItem, NavLink, Nav, Table, Media,
-    Container,Row, Col
+    Button,
+    Card,
+    CardHeader,
+    CardBody,
+    NavItem,
+    NavLink,
+    Nav,
+    Table,
+    Media,
+    Container,
+    Row,
+    Col,
 } from "reactstrap";
 import copy from "copy-to-clipboard";
-import Axios from 'axios';
-import paypal from 'paypal-rest-sdk';
-import PaypalExpressBtn from 'react-paypal-express-checkout';
+import Axios from "axios";
+import paypal from "paypal-rest-sdk";
+import PaypalExpressBtn from "react-paypal-express-checkout";
+import { AuthContext } from "context/GlobalState";
 
 const Group = (props) => {
     const [inviteLink, setInviteLink] = useState();
     const [groupData, setGroupData] = useState([]);
     const [amount, setAmount] = useState();
     const { groupId } = props.match.params;
+    const { state } = React.useContext(AuthContext);
 
-    const getUserId = () =>{
-        let user = localStorage.getItem('user');
-        if (!user){
-             return props.history.push('/auth/login');
+    const getUserId = () => {
+
+
+        var user = state.user
+            ? state.user
+            : JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+        return props.history.push("/auth/login");
         }
-        else {
-            return user = JSON.parse(localStorage.getItem('user'));
-        }
-    }
-    const token = localStorage.getItem('auth-token');
+        // } else {
+        //   return (user = JSON.parse(localStorage.getItem("user")));
+        // }
+    };
+    const token = state.token ? state.token:localStorage.getItem("auth-token");
 
     const handleInputChange = (e) => setInviteLink(e.target.value);
 
     const copyLink = () => {
         copy(inviteLink, {
-            debug: true,
-            message: 'Press #{key} to copy',
+        debug: true,
+        message: "Press #{key} to copy",
         });
         console.log(inviteLink);
-    }
+    };
 
     useEffect(()=>{
         const user = JSON.parse(localStorage.getItem('user'));
@@ -62,10 +78,14 @@ const Group = (props) => {
     }, []);
 
     const client = {
-        'sandbox': 'AYsJCaZfgj6KHfKlmYrkk5zRi5UdaDd94Ew6PtwfLA2c1JsocatAvZKtcHvUU-VMd1KHVjahJvsOLbnA', // please provide your client id here
-        'client_secret': 'EG2EEx66Y9t1oWQPHfR32TQUcxa_Rm5n5uyZcE9S_yMqgDvqEabskqxj1cN9Eoc2GKPCShHfjIPqZjke'
+        sandbox:
+        "AYsJCaZfgj6KHfKlmYrkk5zRi5UdaDd94Ew6PtwfLA2c1JsocatAvZKtcHvUU-VMd1KHVjahJvsOLbnA", // please provide your client id here
+        client_secret:
+        "EG2EEx66Y9t1oWQPHfR32TQUcxa_Rm5n5uyZcE9S_yMqgDvqEabskqxj1cN9Eoc2GKPCShHfjIPqZjke",
     };
-    const paymentOptions = {"application_context": { shipping_preference: 'NO_SHIPPING' }}
+    const paymentOptions = {
+        application_context: { shipping_preference: "NO_SHIPPING" },
+    };
 
     const handlePayment = () => {
         console.log(amount);

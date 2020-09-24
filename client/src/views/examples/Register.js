@@ -23,7 +23,7 @@ function Register () {
 
   const [registerStatus, setRegisterStatus] = useState(false);
 
-	const { state } = useContext(AuthContext);
+	const { state,dispatch } = useContext(AuthContext);
   // const navigate = useNavigate();
 
   const submit = async (e) => {
@@ -40,10 +40,20 @@ function Register () {
         password,
       }).then( response => {
         console.log('LoggedIn', response);
-        localStorage.setItem('auth-token', response.data.token); // saving token to localstorage
-        localStorage.setItem('login', true);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        const user = response.data.user;
+        const token = response.data.token;
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            user,
+            token,
+          },
+        });
+        // localStorage.setItem('auth-token', response.data.token); // saving token to localstorage
+        // localStorage.setItem('login', true);
+        // localStorage.setItem('user', JSON.stringify(response.data.user));
       })
+        
       .catch( error => console.log('Error LoggingIn ', error));
 
     })

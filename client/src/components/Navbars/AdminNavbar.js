@@ -21,7 +21,7 @@ import {
 } from "reactstrap";
 
 const AdminNavbar = (props) => {
-  const { dispatch } = useContext(AuthContext);
+  const {state ,dispatch } = useContext(AuthContext);
   const [ username, setUsername ] = useState('');
   const logout = () => {
     console.log("LOGOUT");
@@ -35,8 +35,8 @@ const AdminNavbar = (props) => {
   }
 
   useEffect(()=>{
-    const user = JSON.parse(localStorage.getItem('user'));
-    setUsername(user.username)
+    // const user = JSON.parse(localStorage.getItem('user'));
+    setUsername(state.user.username)
   },[]);
 
     return (
