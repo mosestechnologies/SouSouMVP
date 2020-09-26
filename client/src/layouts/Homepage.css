@@ -1,0 +1,91 @@
+
+
+.homepage {
+  height: 100%;
+  width: 100%;
+  /* object-fit: contain; */
+  /* background-color: black; */
+
+  background-image: url("https://thumbor.forbes.com/thumbor/fit-in/1200x0/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F1205043983%2F0x0.jpg");
+  position: relative;
+}
+
+.home__content {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+
+  /* background-color: bisque; */
+}
+.home__content>h1{
+    /* margin-top: 8%; */
+    color:white;
+    letter-spacing: 8px;
+    /* margin-bottom: -40px; */
+    position: relative;
+    font-size: 70px;
+    font-weight: bolder;
+    font-family: fo;
+    font-style: italic;
+    z-index: 1;
+    animation: animate 1s linear forwards;
+}
+.home__content>span{
+    z-index: 1;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: white;
+    margin: 20px 20%;
+    font-size: larger;
+    margin-bottom: 20px;
+    animation: animate 1s linear forwards;
+
+}
+@keyframes animate
+{
+  0%{
+opacity:0 ;
+  }
+  100%{
+opacity: 1;
+  }
+}
+
+@keyframes animatebtn
+{
+  0%{
+transform: scale(1);
+  }
+  50%{
+transform: scale(1.12)
+
+  }
+   100%{
+transform: scale(1);
+
+  }
+}
+.home__content>button{
+  background-color:goldenrod;
+  margin-top: 55px;
+  padding: 20px;
+  width: 200px;
+  font-size: larger;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 42px;
+  animation: animatebtn 2s linear infinite;
+
+
+}
+.color_overlay {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.8;
+  position: absolute;
+}
+/* .home__footer {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+} */
