@@ -88,7 +88,7 @@ const Groups = () => {
     });
     toggle();
     const updataRequest = async (e) => {
-      
+
      return Axios.post(
         `/group/update/${UpdateData.groupId}`,{
           headers: {
@@ -96,7 +96,7 @@ const Groups = () => {
             "auth-token": authState.token,
         },UpdateData
       });
-      
+
   }
   console.log(updataRequest);
 
@@ -194,80 +194,7 @@ const Groups = () => {
                             </Badge>
                           </td>
                           <td>
-                            <div className="avatar-group">
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip742438047"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-1-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip742438047"
-                              >
-                                {list.members.first_name}
-                              </UncontrolledTooltip>
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip941738690"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-2-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip941738690"
-                              >
-                                Romina Hadid
-                              </UncontrolledTooltip>
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip804044742"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-3-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip804044742"
-                              >
-                                Alexander Smith
-                              </UncontrolledTooltip>
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip996637554"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-4-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip996637554"
-                              >
-                                Jessica Doe
-                              </UncontrolledTooltip>
-                            </div>
+                            {`${list.members.length}/${list.members_limit}`}
                           </td>
                           <td>
                             <div className="d-flex align-items-center">

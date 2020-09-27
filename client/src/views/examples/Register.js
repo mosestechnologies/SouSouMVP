@@ -11,7 +11,6 @@ import {
 } from "reactstrap";
 
 import Axios from 'axios';
-import * as Yup from 'yup';
 
 function Register () {
   const [first_name, setFirst_name] = useState();
@@ -49,9 +48,6 @@ function Register () {
             token,
           },
         });
-        // localStorage.setItem('auth-token', response.data.token); // saving token to localstorage
-        // localStorage.setItem('login', true);
-        // localStorage.setItem('user', JSON.stringify(response.data.user));
       })
         
       .catch( error => console.log('Error LoggingIn ', error));

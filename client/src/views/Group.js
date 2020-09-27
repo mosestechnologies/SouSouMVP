@@ -5,9 +5,6 @@ import {
     Card,
     CardHeader,
     CardBody,
-    NavItem,
-    NavLink,
-    Nav,
     Table,
     Media,
     Container,
@@ -17,8 +14,10 @@ import {
 import copy from "copy-to-clipboard";
 import Axios from "axios";
 import paypal from "paypal-rest-sdk";
-import PaypalExpressBtn from "react-paypal-express-checkout";
+// import PaypalExpressBtn from "react-paypal-express-checkout";
 import { AuthContext } from "context/GlobalState";
+// import { PayPalButton } from "react-paypal-button-v2";
+import PaypalBtn from 'react-paypal-checkout';
 
 const Group = (props) => {
     const [inviteLink, setInviteLink] = useState();
@@ -26,22 +25,83 @@ const Group = (props) => {
     const [amount, setAmount] = useState();
     const { groupId } = props.match.params;
     const { state } = React.useContext(AuthContext);
-
-    const getUserId = () => {
-
-
-        var user = state.user
+    let userData = state.user
             ? state.user
             : JSON.parse(localStorage.getItem("user"));
 
-        if (!user) {
-        return props.history.push("/auth/login");
+    // const getUserId = () => {
+    //     let user = state.user
+    //         ? state.user
+    //         : JSON.parse(localStorage.getItem("user"));
+
+    //     if (!user) {
+    //         return props.history.push("/auth/login");
+    //     }
+    //     else return user;
+    //     // } else {
+    //     //   return (user = JSON.parse(localStorage.getItem("user")));
+    //     // }
+    // };
+    const onSuccess = (payment) => {
+        // Congratulation, it came here means everything's fine!
+        console.log("The payment was succeeded!", payment);
+        /**
+         * address: undefined
+         * cancelled: false
+         * email: "sb-lzmr83014728@personal.example.com"
+         * paid: true
+         * payerID: "ABNFPMH7TH83W"
+         * paymentID: "PAYID-L5WJWUI2BS103595F222373J"
+         * paymentToken: "EC-779245958D593204J"
+         */
+        const PAYPAL = {
+            paypalEmail: payment.email,
+            paid: payment.paid,
+            payerID: payment.payerID,
+            paymentID: payment.paymentID,
+            paymentToken: payment.paymentToken,
+            paymentMethod: 'paypal',
+            userID: userData.id,
+            userEmail: userData.email
         }
-        // } else {
-        //   return (user = JSON.parse(localStorage.getItem("user")));
-        // }
+        console.log('paymentSuccessData: ', PAYPAL);
+        console.log("user", state.user);
+        Axios.post(`/group/testpayment/${groupId}`, PAYPAL, {
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': token
+            }
+        })
+        .then( response => {
+            console.log('Payment Successfully Processed', response);
+        }).catch(error => {
+            console.log('ERROR:>> ', error);
+        });
+    }
+
+    const onCancel = (data) => {
+        // User pressed "cancel" or closed Paypal's popup!
+        console.log('The payment was cancelled!', data);
+    }
+
+    const onError = (err) => {
+        // The main Paypal's script cannot be loaded or somethings block the loading of that script!
+        console.log("Error!", err);
+    }
+
+    let env = 'sandbox'; // you can set here to 'production' for production
+    let currency = 'USD'; // or you can set this value from your props or state
+    let locale = 'en_US';
+    // For Customize Style: https://developer.paypal.com/docs/checkout/how-to/customize-button/
+    let style = {
+        'label':'pay',
+        'tagline': false,
+        'size':'medium',
+        'shape':'pill',
+        'color':'gold',
+        'height': 50
     };
-    const token = state.token ? state.token:localStorage.getItem("auth-token");
+    const token = state.token ? state.token : localStorage.getItem("auth-token");
 
     const handleInputChange = (e) => setInviteLink(e.target.value);
 
@@ -58,9 +118,7 @@ const Group = (props) => {
         if (!user){
             props.history.push('/auth/login');
         }
-        console.log('user id:: ', user.id);
         const memberID = JSON.stringify({memberID: user.id})
-        console.log('memberID id:: ', memberID);
 
         Axios.post(`/group/get-group/${groupId}`, {memberID: user.id},{
             headers: {
@@ -69,7 +127,7 @@ const Group = (props) => {
             }
         })
         .then( response => {
-            console.log('Group DATA Successfully', response.data.group);
+            console.log('Group DATA Successfully received: ', response.data.group);
             setGroupData(response.data.group);
             setAmount(parseInt(response.data.group.payment_frequency));
         }).catch(error => {
@@ -79,29 +137,12 @@ const Group = (props) => {
 
     const client = {
         sandbox:
-        "AYsJCaZfgj6KHfKlmYrkk5zRi5UdaDd94Ew6PtwfLA2c1JsocatAvZKtcHvUU-VMd1KHVjahJvsOLbnA", // please provide your client id here
-        client_secret:
-        "EG2EEx66Y9t1oWQPHfR32TQUcxa_Rm5n5uyZcE9S_yMqgDvqEabskqxj1cN9Eoc2GKPCShHfjIPqZjke",
+        "AYsJCaZfgj6KHfKlmYrkk5zRi5UdaDd94Ew6PtwfLA2c1JsocatAvZKtcHvUU-VMd1KHVjahJvsOLbnA",
     };
     const paymentOptions = {
         application_context: { shipping_preference: "NO_SHIPPING" },
     };
 
-    const handlePayment = () => {
-        console.log(amount);
-        console.log(typeof(amount));
-        // Axios.get(`/payment/paypal`, {amount: amount}, {
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'auth-token': token
-        //     }
-        // })
-        // .then( response => {
-        //     console.log('Payment Successfully Processed');
-        // }).catch(error => {
-        //     console.log('ERROR:>> ', error);
-        // });
-    };
     return (
         <>
             <Header/>
@@ -115,7 +156,7 @@ const Group = (props) => {
                             </center>
                             <div className="row justify-content-end mr-7">
                                 {/* // TODO: Disablbe button if already paid */}
-                                <PaypalExpressBtn client={client}  currency={'USD'} total={amount}
+                                {/* <PaypalExpressBtn client={client}  currency={'USD'} total={amount}
                                     paymentOptions={paymentOptions}
                                     style= {{
                                         color:  'gold',
@@ -125,6 +166,19 @@ const Group = (props) => {
                                         height: 40
                                     }}
                                     disabled
+                                /> */}
+
+                                <PaypalBtn
+                                    env={env}
+                                    client={client}
+                                    currency={currency}
+                                    total={amount}
+                                    locale={locale}
+                                    style={style}
+                                    shipping={1}
+                                    onError={onError}
+                                    onSuccess={onSuccess}
+                                    onCancel={onCancel}
                                 />
                             </div>
                         </CardHeader>
@@ -132,7 +186,7 @@ const Group = (props) => {
                             <div className="row justify-content-center mb-4">
                                 <div className="col-lg-9 col-sm-12 mt-4 row">
                                     <input className="col-lg-9 mr-4" type="text" disabled
-                                        value={`https://www.sousou-app.herokuapp.com/joingroup/${getUserId()}/${groupId}`}
+                                        value={`https://www.sousou-app.herokuapp.com/joingroup/${userData.id}/${groupId}`}
                                         onChange={ handleInputChange }
                                     />
                                     <button type="submit" onClick={ copyLink } className="col-2 btn btn-success">
