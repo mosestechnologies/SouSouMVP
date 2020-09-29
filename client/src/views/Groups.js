@@ -23,6 +23,7 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip,
 } from "reactstrap";
+import Paginations from "./Pagination"
 import Header from "components/Headers/Header.js";
 import Axios from "axios";
 import { AuthContext } from "../context/GlobalState";
@@ -68,18 +69,21 @@ const initialUpdateState = {
 };
 const Groups = () => {
   const [UpdateData, setUpdateData] = useState(initialUpdateState); // pass initial state
-
+  // const [currentPage, setCurrentPage] = useState(1);
   const [groupsList, setGroupsList] = useState([]);
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const { state: authState } = React.useContext(AuthContext);
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+  const [currentGroupPage, setCurrentGroupPage] = useState(1);
+  const [totalGroups, setTotalGroups] = useState();
+
 
   const handleOnChange = (event) => {
     setUpdateData({
       ...UpdateData,
-      [event.target.name]: event.target.value
-    })
+      [event.target.name]: event.target.value,
+    });
   };
   const handleOnClick = (groupId) => {
     setUpdateData({
@@ -88,18 +92,20 @@ const Groups = () => {
     });
     toggle();
     const updataRequest = async (e) => {
-      
-     return Axios.post(
-        `/group/update/${UpdateData.groupId}`,{
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": authState.token,
-        },UpdateData
+      return Axios.post(`/group/update/${UpdateData.groupId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": authState.token,
+        },
+        UpdateData,
       });
-      
-  }
-  console.log(updataRequest);
-
+    };
+    console.log(updataRequest);
+  };
+  const paginate = (pageNumber) => {
+    console.log(pageNumber);
+    setCurrentGroupPage(pageNumber);
+    // groupfetch();
   };
   useEffect(() => {
     dispatch({
@@ -110,7 +116,41 @@ const Groups = () => {
     const token = authState.token;
     //  const token = localStorage.getItem("auth-token");
     const id = authState.user?.id;
+    const body = {
+      role: user.role,
+      id: id,
+    };
+    // clg
+    if (authState.user.role === "admin") {
+      
+      const groupfetch = async () => {
+        dispatch({
+          type: "FETCH_GROUPS_REQUEST",
+        });
+        const req = await Axios.post(
+          `/admin/groups/${currentGroupPage}`,
+          body,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": token,
+            },
+          }
+        );
+        dispatch({
+          type: "FETCH_GROUPS_SUCCESS",
+          payload: req,
+        });
+        const posts = req.data.total_groups;
 
+        setTotalGroups(posts);
+        const data1 = req.data.groups;
+        // console.log(data1);
+        setGroupsList(data1);
+      };
+      groupfetch();
+    } 
+  else {
     Axios.get(`/group/get/${id}`, {
       headers: {
         "Content-Type": "application/json",
@@ -129,8 +169,15 @@ const Groups = () => {
           payload: response,
         });
       })
-      .catch((error) => console.error(error.response));
-  }, []);
+      .catch((error) => {
+        console.log(error.request);
+        dispatch({
+          type: "FETCH_GROUPS_FAILURE",
+        });
+      })
+  };
+  }, [currentGroupPage]);
+  
   return (
     <div>
       <Header />
@@ -319,8 +366,9 @@ const Groups = () => {
                                     />
                                   </ModalBody>
                                   <ModalFooter>
-                                    <Button color="primary"
-                                      onClick={()=>handleOnClick(list._id)}
+                                    <Button
+                                      color="primary"
+                                      onClick={() => handleOnClick(list._id)}
                                     >
                                       {console.log(UpdateData)}
                                       Save Settings
@@ -351,7 +399,10 @@ const Groups = () => {
                   </tbody>
                 )}
               </Table>
-              <CardFooter className="py-4"></CardFooter>
+
+              <CardFooter className="py-4">
+                <Paginations totalposts={totalGroups} paginate={paginate} />
+              </CardFooter>
             </Card>
           </div>
         </Row>

@@ -52,9 +52,10 @@ const App = () => {
               path="/admin"
               render={(props) => <AdminLayout {...props} />}
             />
-            <Route path="/" render={(props) => <Homepage {...props} />} />
-            <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
+            <Route exact path="/" render={(props) => <Homepage {...props} />} />
+            <Route   path="/auth" render={(props) => <AuthLayout {...props} />} />
             <Route
+       
               path="/group/:groupId"
               render={(props) => <Group {...props} />}
             />
@@ -62,7 +63,7 @@ const App = () => {
               path="/join/:userId/:groupId"
               render={(props) => <JoinGroup {...props} />}
             />
-            <Redirect from="/" to="/admin/index" />
+            
             <Route component={() => <div>404 Not found </div>} />
           </Switch>
         </BrowserRouter>
