@@ -29,7 +29,7 @@ function Homepage() {
           more recently with desktop publishing software like Aldus PageMaker
           including versions of Lorem Ipsum.
         </span>
-        <Button className="button">Register Now</Button>
+        <Button  className="button" onClick >Register Now</Button>
       </div>
 
        <AuthFooter class="home__footer" />
