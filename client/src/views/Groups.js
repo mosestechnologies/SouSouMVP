@@ -23,7 +23,7 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip,
 } from "reactstrap";
-import Paginations from "./Pagination"
+import Paginations from "./Pagination";
 import Header from "components/Headers/Header.js";
 import Axios from "axios";
 import { AuthContext } from "../context/GlobalState";
@@ -78,30 +78,43 @@ const Groups = () => {
   const [currentGroupPage, setCurrentGroupPage] = useState(1);
   const [totalGroups, setTotalGroups] = useState();
 
-
   const handleOnChange = (event) => {
     setUpdateData({
       ...UpdateData,
       [event.target.name]: event.target.value,
     });
   };
-  const handleOnClick = (groupId) => {
+  const handleOnEdit = (groupId) => {
     setUpdateData({
       ...UpdateData,
       groupId: groupId,
+      userID: authState.user.id
     });
     toggle();
-    const updataRequest = async (e) => {
-      return Axios.post(`/group/update/${UpdateData.groupId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": authState.token,
-        },
-        UpdateData,
-      });
-    };
-    console.log(updataRequest);
+  }
+
+  const handleOnClick = () => {
+    // setUpdateData({
+    //   ...UpdateData,
+    //   groupId: groupId,
+    // }); 
+    toggle();
+    Axios.post(`/group/update/${UpdateData.groupId}`, UpdateData, {
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": authState.token,
+      },
+    }).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error.response)
+    });
+    // console.log(request.data);
+    
+
   };
+
+
   const paginate = (pageNumber) => {
     console.log(pageNumber);
     setCurrentGroupPage(pageNumber);
@@ -122,7 +135,6 @@ const Groups = () => {
     };
     // clg
     if (authState.user.role === "admin") {
-      
       const groupfetch = async () => {
         dispatch({
           type: "FETCH_GROUPS_REQUEST",
@@ -149,35 +161,34 @@ const Groups = () => {
         setGroupsList(data1);
       };
       groupfetch();
-    } 
-  else {
-    Axios.get(`/group/get/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": token,
-      },
-    })
-      .then((response) => {
-        console.log(response.data.Groups);
-        setGroupsList(response.data.Groups);
-        return response;
+    } else {
+      Axios.get(`/group/get/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
       })
-      .then((response) => {
-        console.log(response);
-        dispatch({
-          type: "FETCH_GROUPS_SUCCESS",
-          payload: response,
+        .then((response) => {
+          console.log(response.data.Groups);
+          setGroupsList(response.data.Groups);
+          return response;
+        })
+        .then((response) => {
+          console.log(response);
+          dispatch({
+            type: "FETCH_GROUPS_SUCCESS",
+            payload: response,
+          });
+        })
+        .catch((error) => {
+          console.log(error.request);
+          dispatch({
+            type: "FETCH_GROUPS_FAILURE",
+          });
         });
-      })
-      .catch((error) => {
-        console.log(error.request);
-        dispatch({
-          type: "FETCH_GROUPS_FAILURE",
-        });
-      })
-  };
+    }
   }, [currentGroupPage]);
-  
+
   return (
     <div>
       <Header />
@@ -216,10 +227,11 @@ const Groups = () => {
                   </tbody>
                 ) : (
                   <tbody>
-                    {groupsList.map((list) => {
-                      console.log("MEMBERS: ", list.members);
-                      console.log("TITLE: ", list.title);
-                      console.log("TARGET AMOUNT: ", list.target_amount);
+                          {groupsList.map((list) => {
+                            console.log(list);
+                      // console.log("MEMBERS: ", list.members);
+                      // console.log("TITLE: ", list.title);
+                      // console.log("TARGET AMOUNT: ", list.target_amount);
                       return (
                         <tr key={list._id}>
                           <th scope="row">
@@ -242,78 +254,7 @@ const Groups = () => {
                           </td>
                           <td>
                             <div className="avatar-group">
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip742438047"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-1-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip742438047"
-                              >
-                                {list.members.first_name}
-                              </UncontrolledTooltip>
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip941738690"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-2-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip941738690"
-                              >
-                                Romina Hadid
-                              </UncontrolledTooltip>
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip804044742"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-3-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip804044742"
-                              >
-                                Alexander Smith
-                              </UncontrolledTooltip>
-                              <a
-                                className="avatar avatar-sm"
-                                href="#pablo"
-                                id="tooltip996637554"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <img
-                                  alt="..."
-                                  className="rounded-circle"
-                                  src={require("assets/img/theme/team-4-800x800.jpg")}
-                                />
-                              </a>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip996637554"
-                              >
-                                Jessica Doe
-                              </UncontrolledTooltip>
+                              {`${list.members.length} / ${list.members_limit}`}
                             </div>
                           </td>
                           <td>
@@ -328,71 +269,96 @@ const Groups = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="text-right">
-                            <UncontrolledDropdown>
-                              <DropdownToggle
-                                className="btn-icon-only text-light"
-                                href="#pablo"
-                                role="button"
-                                size="sm"
-                                color=""
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <i className="fas fa-ellipsis-v" />
-                              </DropdownToggle>
-                              <DropdownMenu
-                                className="dropdown-menu-arrow"
-                                right
-                              >
-                                <DropdownItem onClick={toggle}>
-                                  Edit
-                                </DropdownItem>
-                                <Modal isOpen={modal} toggle={toggle}>
-                                  <ModalHeader toggle={toggle}>
-                                    Edit Group Settings
-                                  </ModalHeader>
-                                  <ModalBody>
-                                    <Label>Title</Label>
-                                    <Input
-                                      name="title"
-                                      value={UpdateData.title}
-                                      onChange={handleOnChange}
-                                    />
-                                    <Label>Members Limit</Label>
-                                    <Input
-                                      name="membersLimit"
-                                      onChange={handleOnChange}
-                                      value={UpdateData.membersLimit}
-                                    />
-                                  </ModalBody>
-                                  <ModalFooter>
-                                    <Button
-                                      color="primary"
-                                      onClick={() => handleOnClick(list._id)}
+                          {console.log(
+                            list.created_by == authState.user.id
+                              ? "true"
+                              : "false"
+                          )}
+                          {list.cycle_status.length == 0 ? (
+                            authState.user.id == list.created_by ? (
+                              <td className="text-right">
+                                <UncontrolledDropdown>
+                                  <DropdownToggle
+                                    className="btn-icon-only text-light"
+                                    href="#pablo"
+                                    role="button"
+                                    size="sm"
+                                    color=""
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu
+                                    className="dropdown-menu-arrow"
+                                    right
+                                  >
+                                    <DropdownItem
+                                      onClick={() => handleOnEdit(list._id)}
                                     >
-                                      {console.log(UpdateData)}
-                                      Save Settings
-                                    </Button>{" "}
-                                    <Button color="secondary" onClick={toggle}>
-                                      Cancel
-                                    </Button>
-                                  </ModalFooter>
-                                </Modal>
-                                <DropdownItem
-                                  href="#pablo"
-                                  onClick={(e) => e.preventDefault()}
-                                >
-                                  Another action
-                                </DropdownItem>
-                                <DropdownItem
-                                  href="#pablo"
-                                  onClick={(e) => e.preventDefault()}
-                                >
-                                  Something else here
-                                </DropdownItem>
-                              </DropdownMenu>
-                            </UncontrolledDropdown>
-                          </td>
+                                      Edit
+                                    </DropdownItem>
+                                    <Modal isOpen={modal} toggle={toggle}>
+                                      <ModalHeader toggle={toggle}>
+                                        Edit Group Settings
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Label>Title</Label>
+                                        <Input
+                                          name="title"
+                                          value={UpdateData.title}
+                                          onChange={handleOnChange}
+                                        />
+                                        <Label>Members Limit</Label>
+                                        <Input
+                                          name="membersLimit"
+                                          onChange={handleOnChange}
+                                          value={UpdateData.membersLimit}
+                                        />{" "}
+                                        <Label>Payment Frequency</Label>
+                                        <Input
+                                          name="paymentfrequency"
+                                          value={UpdateData.paymentfrequency}
+                                          onChange={handleOnChange}
+                                        />
+                                        <Label>Target Amount</Label>
+                                        <Input
+                                          name="targetAmount"
+                                          value={UpdateData.targetAmount}
+                                          onChange={handleOnChange}
+                                        />
+                                        <Label>Payment Interval</Label>
+                                        <Input
+                                          name="paymentInterval"
+                                          value={UpdateData.paymentInterval}
+                                          onChange={handleOnChange}
+                                        />
+                                        <div className="form-group"></div>
+                                      </ModalBody>
+                                      <ModalFooter>
+                                        <Button
+                                          color="primary"
+                                          onClick={() => handleOnClick()}
+                                        >
+                                          {console.log(UpdateData)}
+                                          Save Settings
+                                        </Button>{" "}
+                                        <Button
+                                          color="secondary"
+                                          onClick={toggle}
+                                        >
+                                          Cancel
+                                        </Button>
+                                      </ModalFooter>
+                                    </Modal>
+                                  </DropdownMenu>
+                                </UncontrolledDropdown>
+                              </td>
+                            ) : (
+                              <td></td>
+                            )
+                          ) : (
+                            <td></td>
+                          )}
                         </tr>
                       );
                     })}
