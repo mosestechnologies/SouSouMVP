@@ -89,13 +89,20 @@ const Groups = () => {
     toggle();
     const updataRequest = async (e) => {
 
-     return Axios.post(
-        `/group/update/${UpdateData.groupId}`,{
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": authState.token,
-        },UpdateData
+     return Axios.post(`/group/update/${UpdateData.groupId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": authState.token,
+        },
+        UpdateData,
       });
+    };
+    console.log(updataRequest);
+  };
+  const paginate = (pageNumber) => {
+    console.log(pageNumber);
+    setCurrentGroupPage(pageNumber);
+    // groupfetch();
 
   }
   console.log(updataRequest);
