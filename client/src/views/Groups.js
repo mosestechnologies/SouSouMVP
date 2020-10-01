@@ -23,6 +23,7 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip,
 } from "reactstrap";
+import Paginations from "./Pagination";
 import Header from "components/Headers/Header.js";
 import Axios from "axios";
 import { AuthContext } from "../context/GlobalState";
@@ -68,45 +69,56 @@ const initialUpdateState = {
 };
 const Groups = () => {
   const [UpdateData, setUpdateData] = useState(initialUpdateState); // pass initial state
-
+  // const [currentPage, setCurrentPage] = useState(1);
   const [groupsList, setGroupsList] = useState([]);
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const { state: authState } = React.useContext(AuthContext);
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+  const [currentGroupPage, setCurrentGroupPage] = useState(1);
+  const [totalGroups, setTotalGroups] = useState();
 
   const handleOnChange = (event) => {
     setUpdateData({
       ...UpdateData,
-      [event.target.name]: event.target.value
-    })
+      [event.target.name]: event.target.value,
+    });
   };
-  const handleOnClick = (groupId) => {
+  const handleOnEdit = (groupId) => {
     setUpdateData({
       ...UpdateData,
       groupId: groupId,
+      userID: authState.user.id
     });
     toggle();
-    const updataRequest = async (e) => {
+  }
 
-     return Axios.post(`/group/update/${UpdateData.groupId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": authState.token,
-        },
-        UpdateData,
-      });
-    };
-    console.log(updataRequest);
+  const handleOnClick = () => {
+    // setUpdateData({
+    //   ...UpdateData,
+    //   groupId: groupId,
+    // });
+    toggle();
+    Axios.post(`/group/update/${UpdateData.groupId}`, UpdateData, {
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": authState.token,
+      },
+    }).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error.response)
+    });
+    // console.log(request.data);
+
+
   };
+
+
   const paginate = (pageNumber) => {
     console.log(pageNumber);
     setCurrentGroupPage(pageNumber);
     // groupfetch();
-
-  }
-  console.log(updataRequest);
-
   };
   useEffect(() => {
     dispatch({
@@ -117,27 +129,66 @@ const Groups = () => {
     const token = authState.token;
     //  const token = localStorage.getItem("auth-token");
     const id = authState.user?.id;
-
-    Axios.get(`/group/get/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": token,
-      },
-    })
-      .then((response) => {
-        console.log(response.data.Groups);
-        setGroupsList(response.data.Groups);
-        return response;
-      })
-      .then((response) => {
-        console.log(response);
+    const body = {
+      role: user.role,
+      id: id,
+    };
+    // clg
+    if (authState.user.role === "admin") {
+      const groupfetch = async () => {
+        dispatch({
+          type: "FETCH_GROUPS_REQUEST",
+        });
+        const req = await Axios.post(
+          `/admin/groups/${currentGroupPage}`,
+          body,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": token,
+            },
+          }
+        );
         dispatch({
           type: "FETCH_GROUPS_SUCCESS",
-          payload: response,
+          payload: req,
         });
+        const posts = req.data.total_groups;
+
+        setTotalGroups(posts);
+        const data1 = req.data.groups;
+        // console.log(data1);
+        setGroupsList(data1);
+      };
+      groupfetch();
+    } else {
+      Axios.get(`/group/get/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
       })
-      .catch((error) => console.error(error.response));
-  }, []);
+        .then((response) => {
+          console.log(response.data.Groups);
+          setGroupsList(response.data.Groups);
+          return response;
+        })
+        .then((response) => {
+          console.log(response);
+          dispatch({
+            type: "FETCH_GROUPS_SUCCESS",
+            payload: response,
+          });
+        })
+        .catch((error) => {
+          console.log(error.request);
+          dispatch({
+            type: "FETCH_GROUPS_FAILURE",
+          });
+        });
+    }
+  }, [currentGroupPage]);
+
   return (
     <div>
       <Header />
@@ -176,10 +227,11 @@ const Groups = () => {
                   </tbody>
                 ) : (
                   <tbody>
-                    {groupsList.map((list) => {
-                      console.log("MEMBERS: ", list.members);
-                      console.log("TITLE: ", list.title);
-                      console.log("TARGET AMOUNT: ", list.target_amount);
+                          {groupsList.map((list) => {
+                            console.log(list);
+                      // console.log("MEMBERS: ", list.members);
+                      // console.log("TITLE: ", list.title);
+                      // console.log("TARGET AMOUNT: ", list.target_amount);
                       return (
                         <tr key={list._id}>
                           <th scope="row">
@@ -201,7 +253,9 @@ const Groups = () => {
                             </Badge>
                           </td>
                           <td>
-                            {`${list.members.length}/${list.members_limit}`}
+                            <div className="avatar-group">
+                              {`${list.members.length} / ${list.members_limit}`}
+                            </div>
                           </td>
                           <td>
                             <div className="d-flex align-items-center">
@@ -215,77 +269,106 @@ const Groups = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="text-right">
-                            <UncontrolledDropdown>
-                              <DropdownToggle
-                                className="btn-icon-only text-light"
-                                href="#pablo"
-                                role="button"
-                                size="sm"
-                                color=""
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <i className="fas fa-ellipsis-v" />
-                              </DropdownToggle>
-                              <DropdownMenu
-                                className="dropdown-menu-arrow"
-                                right
-                              >
-                                <DropdownItem onClick={toggle}>
-                                  Edit
-                                </DropdownItem>
-                                <Modal isOpen={modal} toggle={toggle}>
-                                  <ModalHeader toggle={toggle}>
-                                    Edit Group Settings
-                                  </ModalHeader>
-                                  <ModalBody>
-                                    <Label>Title</Label>
-                                    <Input
-                                      name="title"
-                                      value={UpdateData.title}
-                                      onChange={handleOnChange}
-                                    />
-                                    <Label>Members Limit</Label>
-                                    <Input
-                                      name="membersLimit"
-                                      onChange={handleOnChange}
-                                      value={UpdateData.membersLimit}
-                                    />
-                                  </ModalBody>
-                                  <ModalFooter>
-                                    <Button color="primary"
-                                      onClick={()=>handleOnClick(list._id)}
+                          {console.log(
+                            list.created_by == authState.user.id
+                              ? "true"
+                              : "false"
+                          )}
+                          {list.cycle_status.length == 0 ? (
+                            authState.user.id == list.created_by ? (
+                              <td className="text-right">
+                                <UncontrolledDropdown>
+                                  <DropdownToggle
+                                    className="btn-icon-only text-light"
+                                    href="#pablo"
+                                    role="button"
+                                    size="sm"
+                                    color=""
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu
+                                    className="dropdown-menu-arrow"
+                                    right
+                                  >
+                                    <DropdownItem
+                                      onClick={() => handleOnEdit(list._id)}
                                     >
-                                      {console.log(UpdateData)}
-                                      Save Settings
-                                    </Button>{" "}
-                                    <Button color="secondary" onClick={toggle}>
-                                      Cancel
-                                    </Button>
-                                  </ModalFooter>
-                                </Modal>
-                                <DropdownItem
-                                  href="#pablo"
-                                  onClick={(e) => e.preventDefault()}
-                                >
-                                  Another action
-                                </DropdownItem>
-                                <DropdownItem
-                                  href="#pablo"
-                                  onClick={(e) => e.preventDefault()}
-                                >
-                                  Something else here
-                                </DropdownItem>
-                              </DropdownMenu>
-                            </UncontrolledDropdown>
-                          </td>
+                                      Edit
+                                    </DropdownItem>
+                                    <Modal isOpen={modal} toggle={toggle}>
+                                      <ModalHeader toggle={toggle}>
+                                        Edit Group Settings
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Label>Title</Label>
+                                        <Input
+                                          name="title"
+                                          value={UpdateData.title}
+                                          onChange={handleOnChange}
+                                        />
+                                        <Label>Members Limit</Label>
+                                        <Input
+                                          name="membersLimit"
+                                          onChange={handleOnChange}
+                                          value={UpdateData.membersLimit}
+                                        />{" "}
+                                        <Label>Payment Frequency</Label>
+                                        <Input
+                                          name="paymentfrequency"
+                                          value={UpdateData.paymentfrequency}
+                                          onChange={handleOnChange}
+                                        />
+                                        <Label>Target Amount</Label>
+                                        <Input
+                                          name="targetAmount"
+                                          value={UpdateData.targetAmount}
+                                          onChange={handleOnChange}
+                                        />
+                                        <Label>Payment Interval</Label>
+                                        <Input
+                                          name="paymentInterval"
+                                          value={UpdateData.paymentInterval}
+                                          onChange={handleOnChange}
+                                        />
+                                        <div className="form-group"></div>
+                                      </ModalBody>
+                                      <ModalFooter>
+                                        <Button
+                                          color="primary"
+                                          onClick={() => handleOnClick()}
+                                        >
+                                          {console.log(UpdateData)}
+                                          Save Settings
+                                        </Button>{" "}
+                                        <Button
+                                          color="secondary"
+                                          onClick={toggle}
+                                        >
+                                          Cancel
+                                        </Button>
+                                      </ModalFooter>
+                                    </Modal>
+                                  </DropdownMenu>
+                                </UncontrolledDropdown>
+                              </td>
+                            ) : (
+                              <td></td>
+                            )
+                          ) : (
+                            <td></td>
+                          )}
                         </tr>
                       );
                     })}
                   </tbody>
                 )}
               </Table>
-              <CardFooter className="py-4"></CardFooter>
+
+              <CardFooter className="py-4">
+                <Paginations totalposts={totalGroups} paginate={paginate} />
+              </CardFooter>
             </Card>
           </div>
         </Row>
