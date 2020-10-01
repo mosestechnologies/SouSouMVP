@@ -11,6 +11,7 @@ export const login = (data, callback, dispatch) => {
 		}).then( response => {
 			const user = response.data.user;
 			const token = response.data.token;
+			
 			// console.log(user,token);
 			dispatch({
                 type: "LOGIN",

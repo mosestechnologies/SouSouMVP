@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useContext, useState, useEffect, useHistory } from "react";
+
 // node.js library that concatenates classes (strings)
 import classnames from "classnames";
 // javascipt plugin for creating charts
 import Chart from "chart.js";
+import Paginations from "./Pagination";
+import { Link } from "react-router-dom";
+
 // react plugin used to create charts
+import { Badge, Media, UncontrolledTooltip } from "reactstrap";
 import { Line, Bar } from "react-chartjs-2";
+import Axios from "axios";
 // reactstrap components
 import {
   Button,
@@ -15,142 +21,448 @@ import {
   NavLink,
   Nav,
   Progress,
+  CardFooter,
   Table,
   Container,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 
 // core components
-import {
-  chartOptions,
-  parseOptions,
-  chartExample1,
-  chartExample2
-} from "variables/charts.js";
-
 import Header from "components/Headers/Header.js";
-
-class Index extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      activeNav: 1,
-      chartExample1Data: "data1"
-    };
-    if (window.Chart) {
-      parseOptions(Chart, chartOptions());
-    }
+import { AuthContext } from "context/GlobalState";
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_GROUPS_REQUEST":
+      return {
+        ...state,
+        isFetching: true,
+        hasError: false,
+      };
+    case "FETCH_GROUPS_SUCCESS":
+      return {
+        ...state,
+        isFetching: false,
+        groups: action.payload,
+      };
+    case "FETCH_GROUPS_FAILURE":
+      return {
+        ...state,
+        hasError: true,
+        isFetching: false,
+      };
+    default:
+      return state;
   }
-  toggleNavs = (e, index) => {
-    e.preventDefault();
-    this.setState({
-      activeNav: index,
-      chartExample1Data:
-        this.state.chartExample1Data === "data1" ? "data2" : "data1"
-    });
+};
+const reducer1 = (state, action) => {
+  switch (action.type) {
+    case "FETCH_USERS_REQUEST":
+      return {
+        ...state,
+        isFetching: true,
+        hasError: false,
+      };
+    case "FETCH_USERS_SUCCESS":
+      return {
+        ...state,
+        isFetching: false,
+        users: action.payload,
+      };
+    case "FETCH_USERS_FAILURE":
+      return {
+        ...state,
+        hasError: true,
+        isFetching: false,
+      };
+    default:
+      return state;
+  }
+};
+const initialState = {
+  groups: [],
+  isFetching: false,
+  hasError: false,
+};
+const initialStateUsers = {
+  users: [],
+  isFetching: false,
+  hasError: false,
+};
+function Index() {
+  // const { state } = React.useContext(AuthContext);
+  const { state: authState } = React.useContext(AuthContext);
+  const [currentGroupPage, setCurrentGroupPage] = useState(1);
+  const [currentUserPage, setCurrentUserPage] = useState(1);
+
+  const [usersList, setUsersList] = useState([]);
+  const [groupsList, setGroupsList] = useState([]);
+  const [totalUsers, setTotalUsers] = useState();
+  const [ userState,dispatch1 ] = React.useReducer(reducer1, initialStateUsers);
+
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const user = authState.user;
+  const token = authState.token;
+  //  const token = localStorage.getItem("auth-token");
+  const id = authState.user?.id;
+  const body = {
+    role: user.role,
+    id: id,
   };
-  render() {
-    return (
-      <>
-        <Header />
-        {/* Page content */}
-        <Container className="mt--7" fluid>
-          {/* <Row>
-            <Col className="mb-5 mb-xl-0" xl="8">
-              <Card className="bg-gradient-default shadow">
-                <CardHeader className="bg-transparent">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h6 className="text-uppercase text-light ls-1 mb-1">
-                        Overview
-                      </h6>
-                      <h2 className="text-white mb-0">Sales value</h2>
-                    </div>
-                    <div className="col">
-                      <Nav className="justify-content-end" pills>
-                        <NavItem>
-                          <NavLink
-                            className={classnames("py-2 px-3", {
-                              active: this.state.activeNav === 1
-                            })}
-                            href="#pablo"
-                            onClick={e => this.toggleNavs(e, 1)}
-                          >
-                            <span className="d-none d-md-block">Month</span>
-                            <span className="d-md-none">M</span>
-                          </NavLink>
-                        </NavItem>
-                        <NavItem>
-                          <NavLink
-                            className={classnames("py-2 px-3", {
-                              active: this.state.activeNav === 2
-                            })}
-                            data-toggle="tab"
-                            href="#pablo"
-                            onClick={e => this.toggleNavs(e, 2)}
-                          >
-                            <span className="d-none d-md-block">Week</span>
-                            <span className="d-md-none">W</span>
-                          </NavLink>
-                        </NavItem>
-                      </Nav>
-                    </div>
-                  </Row>
+  // console.log(userState);
+
+  const paginate = (pageNumber) => {
+    console.log(pageNumber);
+    setCurrentUserPage(pageNumber);
+    // groupfetch();
+  };
+  useEffect(() => {
+    if (authState.user.role === "admin") {
+      const fetchData = async () => {
+        dispatch1({
+          type: "FETCH_USERS_REQUEST",
+        });
+        const request = await Axios.post(
+          `/admin/users/${currentUserPage}`,
+          body,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": token,
+            },
+          }
+        );
+        console.log(request.data.users);
+        dispatch1({
+          type: "FETCH_USERS_SUCCESS",
+          payload: request.data,
+        });
+      
+        const data = request.data.users;
+
+        const total_users=request.data.total_users
+        // console.log(total_users);
+        setTotalUsers(total_users)
+        setUsersList(data);
+      };
+      fetchData();
+    }
+
+  }, [currentUserPage])
+      console.log(userState);
+  
+
+  useEffect(() => {
+    
+    if (authState.user.role === "admin") {
+      
+      const groupfetch = async () => {
+        dispatch({
+          type: "FETCH_GROUPS_REQUEST",
+        });
+        const req = await Axios.post(
+          `/admin/groups/${currentGroupPage}`,
+          body,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": token,
+            },
+          }
+        );
+        dispatch({
+          type: "FETCH_GROUPS_SUCCESS",
+          payload: req,
+        });
+
+        const data1 = req.data.groups;
+        // console.log(data1);
+        setGroupsList(data1);
+      };
+      groupfetch();
+    } else {
+      console.log("there is an error");
+    }
+  }, []);
+  console.log(state);
+
+  return (
+    <>
+      <Header />
+      {/* Page content */}
+      <Container className="mt--7" fluid>
+        {authState.user.role === "admin" ? (
+          <>
+            {" "}
+            <Row className="mt-5">
+              <Col className="mb-5 mb-xl-0" xl="6">
+                <Card className="shadow">
+                  <CardHeader className="border-0">
+                    <Row className="align-items-center">
+                      <div className="col">
+                        <h3 className="mb-0">Active Groups</h3>
+                      </div>
+                      <div className="col text-right">
+                        <Link to="/admin/group" color="primary" size="sm">
+                          See all
+                        </Link>
+                      </div>
+                    </Row>
+                  </CardHeader>
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Target</th>
+                        <th scope="col">Members</th>
+                      </tr>
+                    </thead>
+
+                    {state.isFetching ? (
+                      <tbody className="card">
+                        <tr>
+                          <td>LOADING...</td>
+                        </tr>
+                      </tbody>
+                    ) : state.hasError ? (
+                      <tbody className="card">
+                        <tr>AN ERROR HAS OCCURED</tr>
+                      </tbody>
+                    ) : state.groups.length === 0 ? (
+                      <tbody>
+                        {console.log("NO GROUPS: ", state.groups.length)}
+                        No Groups Found
+                      </tbody>
+                    ) : (
+                      <tbody>
+                        {groupsList.map((list) => {
+                          return (
+                            <tr key={list._id}>
+                              <th scope="row">
+                                <Media className="align-items-center">
+                                  <Media>
+                                    <span className="mb-0 text-sm">
+                                      <Link to={`/group/${list._id}`}>
+                                        {list.title}
+                                      </Link>
+                                    </span>
+                                  </Media>
+                                </Media>
+                              </th>
+                              <td>{list.target_amount}</td>
+
+                              <td>
+                                <div className="avatar-group">
+                                  <a
+                                    className="avatar avatar-sm"
+                                    href="#pablo"
+                                    id="tooltip742438047"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <img
+                                      alt="..."
+                                      className="rounded-circle"
+                                      src={require("assets/img/theme/team-1-800x800.jpg")}
+                                    />
+                                  </a>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip742438047"
+                                  >
+                                    {list.members.first_name}
+                                  </UncontrolledTooltip>
+                                  <a
+                                    className="avatar avatar-sm"
+                                    href="#pablo"
+                                    id="tooltip941738690"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <img
+                                      alt="..."
+                                      className="rounded-circle"
+                                      src={require("assets/img/theme/team-2-800x800.jpg")}
+                                    />
+                                  </a>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip941738690"
+                                  >
+                                    Romina Hadid
+                                  </UncontrolledTooltip>
+                                  <a
+                                    className="avatar avatar-sm"
+                                    href="#pablo"
+                                    id="tooltip804044742"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <img
+                                      alt="..."
+                                      className="rounded-circle"
+                                      src={require("assets/img/theme/team-3-800x800.jpg")}
+                                    />
+                                  </a>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip804044742"
+                                  >
+                                    Alexander Smith
+                                  </UncontrolledTooltip>
+                                  <a
+                                    className="avatar avatar-sm"
+                                    href="#pablo"
+                                    id="tooltip996637554"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <img
+                                      alt="..."
+                                      className="rounded-circle"
+                                      src={require("assets/img/theme/team-4-800x800.jpg")}
+                                    />
+                                  </a>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip996637554"
+                                  >
+                                    Jessica Doe
+                                  </UncontrolledTooltip>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    )}
+                  </Table>
+                </Card>
+              </Col>
+              <Col className="" xl="6">
+                <CardHeader className="shadow">
+                  <CardHeader className="border-0">
+                    <Row className="align-items-center">
+                      <div className="col">
+                        <h3 className="mb-0">All Users</h3>
+                      </div>
+                      <div className="col text-right">
+                        <Button
+                          color="primary"
+                          href="#pablo"
+                          onClick={(e) => e.preventDefault()}
+                          size="sm"
+                        >
+                          See all
+                        </Button>
+                      </div>
+                    </Row>
+                  </CardHeader>
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+
+                        <th scope="col" />
+                      </tr>
+                    </thead>
+                    {console.log(userState)}
+                    {userState.isFetching ? (
+                      <tbody className="card">
+                        <tr>
+                          <td>LOADING...</td>
+                        </tr>
+                      </tbody>
+                    ) : userState.hasError ? (
+                      <tbody className="card">
+                        <tr>AN ERROR HAS OCCURED</tr>
+                        </tbody>
+                    ) : userState.users.length === 0 ? (
+                      <tbody>
+                       
+                        No Groups Found
+                      </tbody>
+                    ) : (
+                      <tbody>
+                        {usersList.map((item) => {
+                          return (
+                            <tr key={item._id}>
+                              <th scope="row">{item.username}</th>
+                              <td>{item.email}</td>
+                              <td>{item.role}</td>
+                              <td>{item.status}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    )}
+                  </Table>
                 </CardHeader>
-                <CardBody>
-
-                  // CHART
-
-                  <div className="chart">
-                    <Line
-                      data={chartExample1[this.state.chartExample1Data]}
-                      options={chartExample1.options}
-                      getDatasetAtEvent={e => console.log(e)}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-            <Col xl="4">
-              <Card className="shadow">
-                <CardHeader className="bg-transparent">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h6 className="text-uppercase text-muted ls-1 mb-1">
-                        Performance
-                      </h6>
-                      <h2 className="mb-0">Total orders</h2>
-                    </div>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-
-                  // CHART
-
-                  <div className="chart">
-                    <Bar
-                      data={chartExample2.data}
-                      options={chartExample2.options}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          <Row className="mt-5">
+                <CardFooter className="py-4">
+                  <Paginations totalusers={totalUsers} paginate={paginate} />
+                </CardFooter>
+              </Col>
+            </Row>
+            <Row className="mt-5">
+              <Col className="mb-5 mb-xl-0" xl="8">
+                <Card className="shadow">
+                  <CardHeader className="border-0">
+                    <Row className="align-items-center">
+                      <div className="col">
+                        <h3 className="mb-0">Non-Active Groups</h3>
+                      </div>
+                      <div className="col text-right">
+                        <Button
+                          color="primary"
+                          href="#pablo"
+                          onClick={(e) => e.preventDefault()}
+                          size="sm"
+                        >
+                          See all
+                        </Button>
+                      </div>
+                    </Row>
+                  </CardHeader>
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Target</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Members</th>
+                        <th scope="col">Completion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">/argon/</th>
+                        <td>4,569</td>
+                        <td>340</td>
+                        <td>
+                          <i className="fas fa-arrow-up text-success mr-3" />{" "}
+                          46,53%
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Card>
+              </Col>
+              <Col xl="4"></Col>
+            </Row>
+          </>
+        ) : (
+          <Row className="ml-5 mt-5 mb-5">
             <Col className="mb-5 mb-xl-0" xl="8">
               <Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Page visits</h3>
+                      <h3 className="mb-0">Active Groups</h3>
                     </div>
                     <div className="col text-right">
                       <Button
                         color="primary"
                         href="#pablo"
-                        onClick={e => e.preventDefault()}
+                        onClick={(e) => e.preventDefault()}
                         size="sm"
                       >
                         See all
@@ -161,10 +473,11 @@ class Index extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Page name</th>
-                      <th scope="col">Visitors</th>
-                      <th scope="col">Unique users</th>
-                      <th scope="col">Bounce rate</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Target</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Members</th>
+                      <th scope="col">Completion</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -177,159 +490,15 @@ class Index extends React.Component {
                         46,53%
                       </td>
                     </tr>
-                    <tr>
-                      <th scope="row">/argon/index.html</th>
-                      <td>3,985</td>
-                      <td>319</td>
-                      <td>
-                        <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                        46,53%
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">/argon/charts.html</th>
-                      <td>3,513</td>
-                      <td>294</td>
-                      <td>
-                        <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                        36,49%
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">/argon/tables.html</th>
-                      <td>2,050</td>
-                      <td>147</td>
-                      <td>
-                        <i className="fas fa-arrow-up text-success mr-3" />{" "}
-                        50,87%
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">/argon/profile.html</th>
-                      <td>1,795</td>
-                      <td>190</td>
-                      <td>
-                        <i className="fas fa-arrow-down text-danger mr-3" />{" "}
-                        46,53%
-                      </td>
-                    </tr>
                   </tbody>
                 </Table>
               </Card>
             </Col>
-            <Col xl="4">
-              <Card className="shadow">
-                <CardHeader className="border-0">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h3 className="mb-0">Social traffic</h3>
-                    </div>
-                    <div className="col text-right">
-                      <Button
-                        color="primary"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
-                        size="sm"
-                      >
-                        See all
-                      </Button>
-                    </div>
-                  </Row>
-                </CardHeader>
-                <Table className="align-items-center table-flush" responsive>
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Referral</th>
-                      <th scope="col">Visitors</th>
-                      <th scope="col" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">Facebook</th>
-                      <td>1,480</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">60%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="60"
-                              barClassName="bg-gradient-danger"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Facebook</th>
-                      <td>5,480</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">70%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="70"
-                              barClassName="bg-gradient-success"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Google</th>
-                      <td>4,807</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">80%</span>
-                          <div>
-                            <Progress max="100" value="80" />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Instagram</th>
-                      <td>3,678</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">75%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="75"
-                              barClassName="bg-gradient-info"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">twitter</th>
-                      <td>2,645</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">30%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="30"
-                              barClassName="bg-gradient-warning"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </Card>
-            </Col>
-          </Row> */}
-        </Container>
-      </>
-    );
-  }
+          </Row>
+        )}
+      </Container>
+    </>
+  );
 }
 
 export default Index;
