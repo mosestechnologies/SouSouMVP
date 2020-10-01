@@ -4,6 +4,11 @@ import { AuthContext } from "context/GlobalState";
 import Axios from 'axios';
 
 const JoinGroup = (props) => {
+    console.log("props: ", props);
+
+    let renderCount = 0;
+    console.log(`Render ${++renderCount} 😡`);
+
     const { groupId } = props.match.params;
     const { userId } = props.match.params;
     const [isGroupFull, setIsGroupFull] = useState(false);
@@ -12,6 +17,7 @@ const JoinGroup = (props) => {
 
     const handleGroupJoin = () => {
         const parseUser = state.user;
+        console.log("Joining");
 
         Axios.post(`/group/joingroup/${userId}/${groupId}`, {userID: parseUser.id},{
             headers: {
@@ -32,24 +38,24 @@ const JoinGroup = (props) => {
             return props.history.push('/auth/login');
         }
 
-        Axios.post(`/group/get-group/${groupId}`, {memberID: user.id},{
-            headers: {
-                'Content-Type': 'application/json',
-                'auth-token': state.token
-            }
-        })
-        .then( response => {
-            console.log('Group DATA Successfully', response.data.group);
+        // Axios.post(`/group/get-group/${groupId}`, {memberID: user.id},{
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'auth-token': state.token
+        //     }
+        // })
+        // .then( response => {
+        //     console.log('Group DATA Successfully', response.data.group);
 
-        }).catch(error => {
-            console.log('ERROR:>> ', error);
-        });
+        // }).catch(error => {
+        //     console.log('ERROR:>> ', error);
+        // });
     }, []);
 
     return (
         <div className="mt-7 row justify-content-center">
             <h1 className="mr-4">Welcome</h1>
-            <button disabled className="btn btn-success btn-lg" onClick={ handleGroupJoin }>Join</button>
+            <button className="btn btn-success btn-lg" onClick={ handleGroupJoin }>Join</button>
         </div>
     );
 }

@@ -109,7 +109,7 @@ const CreateGroup = () => {
                                         <input type="text" placeholder="Group Title" onChange={ e => setTitle(e.target.value)} className="form-control" id="title"/>
                                     </div>
                                     <div className="form-group">
-                                        <input type="text" placeholder="Members Limit" onChange={ e => setMembersLimit(e.target.value)} className="form-control" id="members"/>
+                                        <input type="number" placeholder="Members Limit" onChange={ e => setMembersLimit(e.target.value)} className="form-control" id="members"/>
                                     </div>
                                     <div className="form-group">
                                         <input type="text" placeholder="Payment Frequency" onChange={ e => setFrequency(e.target.value)} className="form-control" id="frequency"/>
