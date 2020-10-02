@@ -98,7 +98,7 @@ function Index() {
   const [usersList, setUsersList] = useState([]);
   const [groupsList, setGroupsList] = useState([]);
   const [totalUsers, setTotalUsers] = useState();
-  const [ userState,dispatch1 ] = React.useReducer(reducer1, initialStateUsers);
+  const [userState, dispatch1] = React.useReducer(reducer1, initialStateUsers);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const user = authState.user;
@@ -137,25 +137,23 @@ function Index() {
           type: "FETCH_USERS_SUCCESS",
           payload: request.data,
         });
-      
+
         const data = request.data.users;
 
-        const total_users=request.data.total_users
+        const total_users = request.data.total_users;
         // console.log(total_users);
-        setTotalUsers(total_users)
+        setTotalUsers(total_users);
         setUsersList(data);
       };
       fetchData();
     }
-
-  }, [currentUserPage])
-      console.log(userState);
-  
+  }, [currentUserPage]);
+  console.log(userState);
 
   useEffect(() => {
-    
     if (authState.user.role === "admin") {
-      
+      console.log("this is from admin role");
+
       const groupfetch = async () => {
         dispatch({
           type: "FETCH_GROUPS_REQUEST",
@@ -181,10 +179,37 @@ function Index() {
       };
       groupfetch();
     } else {
-      console.log("there is an error");
+      console.log("this is from user role");
+      // Axios.get(`/group/get/${id}`, {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "auth-token": token,
+      //   },
+      // });
+      const groupfetch = async () => {
+        dispatch({
+          type: "FETCH_GROUPS_REQUEST",
+        });
+        const req = await Axios.get(`/group/get/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        dispatch({
+          type: "FETCH_GROUPS_SUCCESS",
+          payload: req,
+        });
+
+        const data1 = req.data.Groups;
+        // console.log(data1);
+        setGroupsList(data1);
+      };
+      groupfetch(); 
     }
   }, []);
-  console.log(state);
+
+  console.log(groupsList);
 
   return (
     <>
@@ -252,80 +277,9 @@ function Index() {
                               <td>{list.target_amount}</td>
 
                               <td>
-                                <div className="avatar-group">
-                                  <a
-                                    className="avatar avatar-sm"
-                                    href="#pablo"
-                                    id="tooltip742438047"
-                                    onClick={(e) => e.preventDefault()}
-                                  >
-                                    <img
-                                      alt="..."
-                                      className="rounded-circle"
-                                      src={require("assets/img/theme/team-1-800x800.jpg")}
-                                    />
-                                  </a>
-                                  <UncontrolledTooltip
-                                    delay={0}
-                                    target="tooltip742438047"
-                                  >
-                                    {list.members.first_name}
-                                  </UncontrolledTooltip>
-                                  <a
-                                    className="avatar avatar-sm"
-                                    href="#pablo"
-                                    id="tooltip941738690"
-                                    onClick={(e) => e.preventDefault()}
-                                  >
-                                    <img
-                                      alt="..."
-                                      className="rounded-circle"
-                                      src={require("assets/img/theme/team-2-800x800.jpg")}
-                                    />
-                                  </a>
-                                  <UncontrolledTooltip
-                                    delay={0}
-                                    target="tooltip941738690"
-                                  >
-                                    Romina Hadid
-                                  </UncontrolledTooltip>
-                                  <a
-                                    className="avatar avatar-sm"
-                                    href="#pablo"
-                                    id="tooltip804044742"
-                                    onClick={(e) => e.preventDefault()}
-                                  >
-                                    <img
-                                      alt="..."
-                                      className="rounded-circle"
-                                      src={require("assets/img/theme/team-3-800x800.jpg")}
-                                    />
-                                  </a>
-                                  <UncontrolledTooltip
-                                    delay={0}
-                                    target="tooltip804044742"
-                                  >
-                                    Alexander Smith
-                                  </UncontrolledTooltip>
-                                  <a
-                                    className="avatar avatar-sm"
-                                    href="#pablo"
-                                    id="tooltip996637554"
-                                    onClick={(e) => e.preventDefault()}
-                                  >
-                                    <img
-                                      alt="..."
-                                      className="rounded-circle"
-                                      src={require("assets/img/theme/team-4-800x800.jpg")}
-                                    />
-                                  </a>
-                                  <UncontrolledTooltip
-                                    delay={0}
-                                    target="tooltip996637554"
-                                  >
-                                    Jessica Doe
-                                  </UncontrolledTooltip>
-                                </div>
+                                    <div className="avatar-group">
+                                      {`${list.members.length} / ${list.members_limit}`}
+                                    </div>
                               </td>
                             </tr>
                           );
@@ -375,12 +329,9 @@ function Index() {
                     ) : userState.hasError ? (
                       <tbody className="card">
                         <tr>AN ERROR HAS OCCURED</tr>
-                        </tbody>
-                    ) : userState.users.length === 0 ? (
-                      <tbody>
-                       
-                        No Groups Found
                       </tbody>
+                    ) : userState.users.length === 0 ? (
+                      <tbody>No Users Found</tbody>
                     ) : (
                       <tbody>
                         {usersList.map((item) => {
@@ -402,55 +353,9 @@ function Index() {
                 </CardFooter>
               </Col>
             </Row>
-            <Row className="mt-5">
-              <Col className="mb-5 mb-xl-0" xl="8">
-                <Card className="shadow">
-                  <CardHeader className="border-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h3 className="mb-0">Non-Active Groups</h3>
-                      </div>
-                      <div className="col text-right">
-                        <Button
-                          color="primary"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                          size="sm"
-                        >
-                          See all
-                        </Button>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Title</th>
-                        <th scope="col">Target</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Members</th>
-                        <th scope="col">Completion</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">/argon/</th>
-                        <td>4,569</td>
-                        <td>340</td>
-                        <td>
-                          <i className="fas fa-arrow-up text-success mr-3" />{" "}
-                          46,53%
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card>
-              </Col>
-              <Col xl="4"></Col>
-            </Row>
           </>
         ) : (
-          <Row className="ml-5 mt-5 mb-5">
+          <Row className="mt-5">
             <Col className="mb-5 mb-xl-0" xl="8">
               <Card className="shadow">
                 <CardHeader className="border-0">
@@ -475,25 +380,57 @@ function Index() {
                     <tr>
                       <th scope="col">Title</th>
                       <th scope="col">Target</th>
-                      <th scope="col">Status</th>
                       <th scope="col">Members</th>
-                      <th scope="col">Completion</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">/argon/</th>
-                      <td>4,569</td>
-                      <td>340</td>
-                      <td>
-                        <i className="fas fa-arrow-up text-success mr-3" />{" "}
-                        46,53%
-                      </td>
-                    </tr>
-                  </tbody>
+
+                  {state.isFetching ? (
+                    <tbody className="card">
+                      <tr>
+                        <td>LOADING...</td>
+                      </tr>
+                    </tbody>
+                  ) : state.hasError ? (
+                    <tbody className="card">
+                      <tr>AN ERROR HAS OCCURED</tr>
+                    </tbody>
+                  ) : state.groups.length === 0 ? (
+                    <tbody>
+                      {console.log("NO GROUPS: ", state.groups.length)}
+                      No Groups Found
+                    </tbody>
+                  ) : (
+                    <tbody>
+                      {groupsList.map((list) => {
+                        return (
+                          <tr key={list._id}>
+                            <th scope="row">
+                              <Media className="align-items-center">
+                                <Media>
+                                  <span className="mb-0 text-sm">
+                                    <Link to={`/group/${list._id}`}>
+                                      {list.title}
+                                    </Link>
+                                  </span>
+                                </Media>
+                              </Media>
+                            </th>
+                            <td>{list.target_amount}</td>
+
+                            <td>
+                              <div className="avatar-group">
+                                {`${list.members.length} / ${list.members_limit}`}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  )}
                 </Table>
               </Card>
             </Col>
+            <Col xl="4"></Col>
           </Row>
         )}
       </Container>

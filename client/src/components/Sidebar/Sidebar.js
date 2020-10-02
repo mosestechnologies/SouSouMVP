@@ -72,7 +72,7 @@ class Sidebar extends React.Component {
 
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
-    return routes.map((prop, key) => {
+    return routes.slice(0,4).map((prop, key) => {
       return (
         <NavItem key={key}>
           <NavLink
@@ -134,10 +134,7 @@ class Sidebar extends React.Component {
                 className="dropdown-menu-arrow"
                 right
               >
-                <DropdownItem>Action</DropdownItem>
-                <DropdownItem>Another action</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>Something else here</DropdownItem>
+               
               </DropdownMenu>
             </UncontrolledDropdown>
             <UncontrolledDropdown nav>
@@ -159,18 +156,7 @@ class Sidebar extends React.Component {
                   <i className="ni ni-single-02" />
                   <span>My profile</span>
                 </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Settings</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-calendar-grid-58" />
-                  <span>Activity</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-support-16" />
-                  <span>Support</span>
-                </DropdownItem>
+                
                 <DropdownItem divider />
 
                 {/** <<<< @Logout  >>>>*/}
@@ -179,7 +165,6 @@ class Sidebar extends React.Component {
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>
-
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
@@ -190,15 +175,12 @@ class Sidebar extends React.Component {
               <Row>
                 {logo ? (
                   <Col className="collapse-brand" xs="6">
-                    {logo.innerLink ? (
-                      <Link to={logo.innerLink}>
-                        <img alt={logo.imgAlt} src={logo.imgSrc} />
-                      </Link>
-                    ) : (
-                      <a href={logo.outterLink}>
-                        <img alt={logo.imgAlt} src={logo.imgSrc} />
-                      </a>
-                    )}
+                    {logo ? (
+                      <NavbarBrand className="pt-0" {...navbarBrandProps}>
+                        <h1>SouSou</h1>
+                      </NavbarBrand>
+                    ) : null}
+                    {/* User */}
                   </Col>
                 ) : null}
                 <Col className="collapse-close" xs="6">
@@ -245,7 +227,6 @@ class Sidebar extends React.Component {
                 </NavLink>
               </NavItem>
             </Nav> */}
-
           </Collapse>
         </Container>
       </Navbar>

@@ -16,6 +16,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import Group from "./views/Group";
 import GroupView from "./views/GroupView";
 import JoinGroup from "./views/JoinGroup";
+import ResetPassword from './views/examples/ResetPassword'
 
 /** <<<  @Styles  >>> */
 import "assets/plugins/nucleo/css/nucleo.css";
@@ -54,8 +55,8 @@ const App = () => {
           <Route path="/auth" render={ props => <AuthLayout {...props} /> } />
           <Route path="/group/:groupId" render={ props => <Group {...props} /> } />
           <Route path="/group_view/:groupId" render={ props => <GroupView {...props} /> } />
-          {/* <ProtectedRoute path="/join/:userId/:groupId" render={ props => <JoinGroup {...props} /> } /> */}
           <Route path="/joingroup/:userId/:groupId" render={ props => <JoinGroup {...props} /> } />
+          <Route path="/reset-password" render={ props => <ResetPassword {...props}/>}/>
           {/* <Redirect from="/" to="/admin/index" /> */}
           <Route component={() => (<div>404 Not found </div>)} />
         </Switch>
@@ -69,7 +70,7 @@ const App = () => {
             <Route exact path="/" render={(props) => <Homepage {...props} />} />
             <Route   path="/auth" render={(props) => <AuthLayout {...props} />} />
             <Route
-       
+
               path="/group/:groupId"
               render={(props) => <Group {...props} />}
             />
@@ -77,7 +78,7 @@ const App = () => {
               path="/join/:userId/:groupId"
               render={(props) => <JoinGroup {...props} />}
             />
-            
+
             <Route component={() => <div>404 Not found </div>} />
           </Switch>
         </BrowserRouter> */}

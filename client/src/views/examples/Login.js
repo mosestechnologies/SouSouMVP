@@ -17,9 +17,10 @@ import {
 import { AuthContext } from "../../context/GlobalState";
 import { login } from '../../utils/auth';
 import '../MessageBar.css';
+import { Link } from 'react-router-dom';
 
 function Login (props) {
-	
+
 	const { state, dispatch } = useContext(AuthContext);
 	console.log("this is login state",state);
 	const initialState = {
@@ -32,7 +33,7 @@ function Login (props) {
 
 	const handleInputChange = event => {
         setloginData({
-            ...loginData, 
+            ...loginData,
             [event.target.name]: event.target.value
         });
     };
@@ -128,14 +129,14 @@ function Login (props) {
 			</Card>
 			<Row className="mt-3">
 				<Col xs="6">
-					<a className="text-light" href="#pablo" onClick={e => e.preventDefault()}>
+					<Link to="/reset-password" className="text-light">
 						<small>Forgot password?</small>
-					</a>
+					</Link>
 				</Col>
 				<Col className="text-right" xs="6">
-					<a className="text-light" href="#pablo" onClick={e => e.preventDefault()}>
-					<small>Create new account</small>
-					</a>
+					<Link to="/register" className="text-light">
+						<small>Create new account</small>
+					</Link>
 				</Col>
 			</Row>
 		</Col>
