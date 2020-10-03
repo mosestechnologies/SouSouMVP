@@ -123,7 +123,7 @@ function Index() {
           type: "FETCH_USERS_REQUEST",
         });
         const request = await Axios.post(
-          `/admin/users/${currentUserPage}`,
+          `admin/users/${currentUserPage}`,
           body,
           {
             headers: {
@@ -159,7 +159,7 @@ function Index() {
           type: "FETCH_GROUPS_REQUEST",
         });
         const req = await Axios.post(
-          `/admin/groups/${currentGroupPage}`,
+          `admin/groups/${currentGroupPage}`,
           body,
           {
             headers: {
