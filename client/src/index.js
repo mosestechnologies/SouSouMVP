@@ -59,7 +59,7 @@ const App = () => {
               render={(props) => <Group {...props} />}
             />
             <Route
-              path="/group_view/:groupId"
+              path="/group_view/:grou pId"
               render={(props) => <GroupView {...props} />}
             />
             <Route

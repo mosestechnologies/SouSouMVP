@@ -219,7 +219,7 @@ const Group = (props) => {
                             <div className="row justify-content-center mb-4">
                                 <div className="col-lg-9 col-sm-12 mt-4 row">
                                     <input className="col-lg-9 mr-4" type="text" readonly
-                                        value={`https://www.sousou-app.herokuapp.com/joingroup/${userData.id}/${groupId}`}
+                                        value={`https://www.helpingourhands.com/joingroup/${userData.id}/${groupId}`}
                                         onChange={ handleInputChange }
                                     />
                                     <button type="submit" onClick={ copyLink } className="col-2 btn btn-success">
