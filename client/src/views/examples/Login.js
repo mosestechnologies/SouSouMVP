@@ -22,7 +22,6 @@ import { Link } from 'react-router-dom';
 function Login (props) {
 
 	const { state, dispatch } = useContext(AuthContext);
-	console.log("this is login state",state);
 	const initialState = {
         email: "",
         password: "",
@@ -45,7 +44,6 @@ function Login (props) {
             isSubmitting: true,
             errorMessage: null
         });
-		console.log('submitting');
 		const loginUserData = {
 			email: loginData.email,
 			password: loginData.password
@@ -110,9 +108,9 @@ function Login (props) {
 								</InputGroup>
 							</FormGroup>
 							<div className="text-center">
-								<Button className="my-4" color="primary" type="button" onClick={submit}>
+								{ loginData?.isSubmitting===true ? ("...Signing In"):(<Button className="my-4" color="primary" type="button" onClick={submit}>
 									Sign in
-								</Button>
+								</Button>)}
 								{
 									state.isAuthenticated ? (
 										<div className="success">
@@ -134,7 +132,7 @@ function Login (props) {
 					</Link>
 				</Col>
 				<Col className="text-right" xs="6">
-					<Link to="/register" className="text-light">
+					<Link to="/auth/register" className="text-light">
 						<small>Create new account</small>
 					</Link>
 				</Col>

@@ -27,7 +27,6 @@ const App = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   useEffect(() => {
-    console.log("JSON PARSE: ", JSON.parse(localStorage.getItem("user")));
     const user = JSON.parse(localStorage.getItem("user") || null || state.user);
     const token = localStorage.getItem("auth-token") || null || state.token;
     // const user = state.user;

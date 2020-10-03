@@ -1,6 +1,6 @@
 import React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
-// reactstrap components
+
+import { Route, Switch, Redirect,useHistory } from "react-router-dom";
 import { Container, Row, Col } from "reactstrap";
 import "./Homepage.css";
 import { Button } from 'reactstrap';
@@ -12,6 +12,11 @@ import AuthFooter from "components/Footers/AuthFooter.js";
 import routes from "routes.js";
 
 function Homepage() {
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push("auth/register")
+  }
   return (
     <div class="homepage">
       <div className="color_overlay"></div>
@@ -29,7 +34,7 @@ function Homepage() {
           more recently with desktop publishing software like Aldus PageMaker
           including versions of Lorem Ipsum.
         </span>
-        <Button  className="button" onClick >Register Now</Button>
+        <Button  className="button" onClick={handleClick} >Register Now</Button>
       </div>
 
        <AuthFooter class="home__footer" />

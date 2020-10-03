@@ -24,7 +24,6 @@ const AdminNavbar = (props) => {
   const {state ,dispatch } = useContext(AuthContext);
   const [ username, setUsername ] = useState('');
   const logout = () => {
-    console.log("LOGOUT");
     localStorage.removeItem("auth-token");
     localStorage.setItem('login', false);
     localStorage.removeItem("user");
