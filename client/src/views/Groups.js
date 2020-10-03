@@ -227,8 +227,7 @@ const Groups = () => {
                   </tbody>
                 ) : (
                   <tbody>
-                          {groupsList.map((list) => {
-                            console.log(list);
+                          {groupsList?.map((list) => {
                       // console.log("MEMBERS: ", list.members);
                       // console.log("TITLE: ", list.title);
                       // console.log("TARGET AMOUNT: ", list.target_amount);
@@ -269,12 +268,8 @@ const Groups = () => {
                               </div>
                             </div>
                           </td>
-                          {console.log(
-                            list.created_by == authState.user.id
-                              ? "true"
-                              : "false"
-                          )}
-                          {list.cycle_status.length == 0 ? (
+
+                          {list?.cycle_status.length == 0 ? (
                             authState.user.id == list.created_by ? (
                               <td className="text-right">
                                 <UncontrolledDropdown>
@@ -305,30 +300,35 @@ const Groups = () => {
                                         <Label>Title</Label>
                                         <Input
                                           name="title"
+                                          type="text"
                                           value={UpdateData.title}
                                           onChange={handleOnChange}
                                         />
                                         <Label>Members Limit</Label>
                                         <Input
                                           name="membersLimit"
+                                          type="number"
                                           onChange={handleOnChange}
                                           value={UpdateData.membersLimit}
                                         />{" "}
                                         <Label>Payment Frequency</Label>
                                         <Input
                                           name="paymentfrequency"
+                                          type="number"
                                           value={UpdateData.paymentfrequency}
                                           onChange={handleOnChange}
                                         />
                                         <Label>Target Amount</Label>
                                         <Input
                                           name="targetAmount"
+                                          type="number"
                                           value={UpdateData.targetAmount}
                                           onChange={handleOnChange}
                                         />
                                         <Label>Payment Interval</Label>
                                         <Input
                                           name="paymentInterval"
+                                          type="text"
                                           value={UpdateData.paymentInterval}
                                           onChange={handleOnChange}
                                         />
@@ -339,7 +339,6 @@ const Groups = () => {
                                           color="primary"
                                           onClick={() => handleOnClick()}
                                         >
-                                          {console.log(UpdateData)}
                                           Save Settings
                                         </Button>{" "}
                                         <Button

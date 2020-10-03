@@ -132,7 +132,6 @@ function Index() {
             },
           }
         );
-        console.log(request.data.users);
         dispatch1({
           type: "FETCH_USERS_SUCCESS",
           payload: request.data,
@@ -148,11 +147,9 @@ function Index() {
       fetchData();
     }
   }, [currentUserPage]);
-  console.log(userState);
 
   useEffect(() => {
     if (authState.user.role === "admin") {
-      console.log("this is from admin role");
 
       const groupfetch = async () => {
         dispatch({
@@ -179,13 +176,7 @@ function Index() {
       };
       groupfetch();
     } else {
-      console.log("this is from user role");
-      // Axios.get(`/group/get/${id}`, {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "auth-token": token,
-      //   },
-      // });
+   
       const groupfetch = async () => {
         dispatch({
           type: "FETCH_GROUPS_REQUEST",
@@ -202,14 +193,12 @@ function Index() {
         });
 
         const data1 = req.data.Groups;
-        // console.log(data1);
         setGroupsList(data1);
       };
       groupfetch(); 
     }
   }, []);
 
-  console.log(groupsList);
 
   return (
     <>
@@ -255,12 +244,11 @@ function Index() {
                       </tbody>
                     ) : state.groups.length === 0 ? (
                       <tbody>
-                        {console.log("NO GROUPS: ", state.groups.length)}
                         No Groups Found
                       </tbody>
                     ) : (
                       <tbody>
-                        {groupsList.map((list) => {
+                        {groupsList?.map((list) => {
                           return (
                             <tr key={list._id}>
                               <th scope="row">
@@ -319,7 +307,6 @@ function Index() {
                         <th scope="col" />
                       </tr>
                     </thead>
-                    {console.log(userState)}
                     {userState.isFetching ? (
                       <tbody className="card">
                         <tr>
@@ -334,7 +321,7 @@ function Index() {
                       <tbody>No Users Found</tbody>
                     ) : (
                       <tbody>
-                        {usersList.map((item) => {
+                        {usersList?.map((item) => {
                           return (
                             <tr key={item._id}>
                               <th scope="row">{item.username}</th>

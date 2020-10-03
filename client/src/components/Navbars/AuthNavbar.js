@@ -16,7 +16,6 @@ import { AuthContext, reducer, initialState } from "../../context/GlobalState";
 
 const AdminNavbar = () => {
   const { state } = useContext(AuthContext);
-  console.log('DISPLAY STATE: ', state)
 
   const checkAuth = () => {
     if (state.isAuthenticated) {
@@ -71,7 +70,7 @@ const AdminNavbar = () => {
               <Row>
                 <Col className="collapse-brand" xs="6">
                   <Link to="/">
-                    <img alt="..." src={require("assets/img/brand/argon-react.png")}/>
+                    <h1>SouSou</h1>
                   </Link>
                 </Col>
                 <Col className="collapse-close" xs="6">

@@ -112,10 +112,10 @@ const CreateGroup = () => {
                                         <input type="number" placeholder="Members Limit" onChange={ e => setMembersLimit(e.target.value)} className="form-control" id="members"/>
                                     </div>
                                     <div className="form-group">
-                                        <input type="text" placeholder="Payment Frequency" onChange={ e => setFrequency(e.target.value)} className="form-control" id="frequency"/>
+                                        <input type="number" placeholder="Payment Frequency" onChange={ e => setFrequency(e.target.value)} className="form-control" id="frequency"/>
                                     </div>
                                     <div className="form-group">
-                                        <input type="text" placeholder="Target Amount" onChange={ e => setTargetAmount(e.target.value)} className="form-control" id="target"/>
+                                        <input type="number" placeholder="Target Amount" onChange={ e => setTargetAmount(e.target.value)} className="form-control" id="target"/>
                                     </div>
                                     <div className="form-group">
                                         <input type="text" placeholder="Payment Interval" onChange={ e => setCycle(e.target.value)} className="form-control" id="interval"/>
