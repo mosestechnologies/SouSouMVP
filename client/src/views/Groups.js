@@ -88,10 +88,18 @@ const Groups = () => {
     setUpdateData({
       ...UpdateData,
       groupId: groupId,
-      userID: authState.user.id
+      userID: authState.user.id,
     });
     toggle();
-  }
+  };
+  const handleOnDelete = (groupId) => {
+    const del = async () => {
+      const req = await Axios.delete(`admin/group/${groupId}`);
+      const data = req.data;
+      console.log(data);
+    };
+    del();
+  };
 
   const handleOnClick = () => {
     // setUpdateData({
@@ -104,16 +112,15 @@ const Groups = () => {
         "Content-Type": "application/json",
         "auth-token": authState.token,
       },
-    }).then((response) => {
-      console.log(response);
-    }).catch((error) => {
-      console.log(error.response)
-    });
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
     // console.log(request.data);
-
-
   };
-
 
   const paginate = (pageNumber) => {
     console.log(pageNumber);
@@ -227,7 +234,7 @@ const Groups = () => {
                   </tbody>
                 ) : (
                   <tbody>
-                          {groupsList?.map((list) => {
+                    {groupsList?.map((list) => {
                       // console.log("MEMBERS: ", list.members);
                       // console.log("TITLE: ", list.title);
                       // console.log("TARGET AMOUNT: ", list.target_amount);
@@ -291,6 +298,11 @@ const Groups = () => {
                                       onClick={() => handleOnEdit(list._id)}
                                     >
                                       Edit
+                                    </DropdownItem>
+                                    <DropdownItem
+                                      onClick={() => handleOnDelete(list._id)}
+                                    >
+                                      Delete
                                     </DropdownItem>
                                     <Modal isOpen={modal} toggle={toggle}>
                                       <ModalHeader toggle={toggle}>

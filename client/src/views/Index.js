@@ -207,7 +207,7 @@ function Index() {
       <Container className="mt--7" fluid>
         {authState.user.role === "admin" ? (
           <>
-            {" "}
+     
             <Row className="mt-5">
               <Col className="mb-5 mb-xl-0" xl="6">
                 <Card className="shadow">
@@ -248,7 +248,7 @@ function Index() {
                       </tbody>
                     ) : (
                       <tbody>
-                        {groupsList?.map((list) => {
+                        {groupsList ?.map((list) => {
                           return (
                             <tr key={list._id}>
                               <th scope="row">
@@ -287,7 +287,7 @@ function Index() {
                       <div className="col text-right">
                         <Button
                           color="primary"
-                          href="#pablo"
+                          href=""
                           onClick={(e) => e.preventDefault()}
                           size="sm"
                         >
