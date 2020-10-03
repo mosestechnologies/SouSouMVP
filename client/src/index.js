@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createBrowserHistory } from "history";
 import ReactDOM from "react-dom";
 import {
   BrowserRouter,
@@ -23,9 +24,10 @@ import ResetPassword from "./views/examples/ResetPassword";
 import "assets/plugins/nucleo/css/nucleo.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/scss/argon-dashboard-react.scss";
-const history = useHistory();
+
 const App = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  const history = createBrowserHistory();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || null || state.user);
@@ -47,35 +49,34 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
-        <BrowserRouter history={history}>
-          <Switch>
-            <Route exact path="/" render={(props) => <Homepage />} />
-            <ProtectedRoute
-              path="/admin"
-              render={(props) => <AdminLayout {...props} />}
-            />
-            <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-            <Route
-              path="/group/:groupId"
-              render={(props) => <Group {...props} />}
-            />
-            <Route
-              path="/group_view/:groupId"
-              render={(props) => <GroupView {...props} />}
-            />
-            <Route
-              path="/joingroup/:userId/:groupId"
-              render={(props) => <JoinGroup {...props} />}
-            />
-            <Route
-              path="/reset-password"
-              render={(props) => <ResetPassword {...props} />}
-            />
-            {/* <Redirect from="/" to="/admin/index" /> */}
-            <Route component={() => <div>404 Not found </div>} />
-          </Switch>
-        </BrowserRouter>
-        
+      <BrowserRouter history={history}>
+        <Switch>
+          <Route exact path="/" render={(props) => <Homepage />} />
+          <ProtectedRoute
+            path="/admin"
+            render={(props) => <AdminLayout {...props} />}
+          />
+          <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
+          <Route
+            path="/group/:groupId"
+            render={(props) => <Group {...props} />}
+          />
+          <Route
+            path="/group_view/:groupId"
+            render={(props) => <GroupView {...props} />}
+          />
+          <Route
+            path="/joingroup/:userId/:groupId"
+            render={(props) => <JoinGroup {...props} />}
+          />
+          <Route
+            path="/reset-password"
+            render={(props) => <ResetPassword {...props} />}
+          />
+          {/* <Redirect from="/" to="/admin/index" /> */}
+          <Route component={() => <div>404 Not found </div>} />
+        </Switch>
+      </BrowserRouter>
     </AuthContext.Provider>
   );
 };

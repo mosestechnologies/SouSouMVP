@@ -265,11 +265,19 @@ const Groups = () => {
                           </td>
                           <td>
                             <div className="d-flex align-items-center">
-                              <span className="mr-2">60%</span>
+                              <span className="mr-2">
+                                {Math.ceil(
+                                  (list.members.length / list.members_limit) *
+                                    100
+                                )} %
+                              </span>
                               <div>
                                 <Progress
                                   max="100"
-                                  value="60"
+                                  value={Math.ceil(
+                                    (list.members.length / list.members_limit) *
+                                      100
+                                  )}
                                   barClassName="bg-danger"
                                 />
                               </div>
