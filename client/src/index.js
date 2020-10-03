@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import {
   BrowserRouter,
+  useHistory,
   Route,
   Switch,
   Redirect,
@@ -22,7 +23,7 @@ import ResetPassword from "./views/examples/ResetPassword";
 import "assets/plugins/nucleo/css/nucleo.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/scss/argon-dashboard-react.scss";
-
+const history = useHistory();
 const App = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
@@ -46,7 +47,7 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
-        <BrowserRouter basename="/">
+        <BrowserRouter history={history}>
           <Switch>
             <Route exact path="/" render={(props) => <Homepage />} />
             <ProtectedRoute
@@ -59,7 +60,7 @@ const App = () => {
               render={(props) => <Group {...props} />}
             />
             <Route
-              path="/group_view/:grou pId"
+              path="/group_view/:groupId"
               render={(props) => <GroupView {...props} />}
             />
             <Route
