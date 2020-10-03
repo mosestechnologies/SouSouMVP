@@ -47,7 +47,7 @@ const App = () => {
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
       <HashRouter basename="/">
-        <BrowserRouter>
+       
           <Switch>
             <Route exact path="/" render={(props) => <Homepage />} />
             <ProtectedRoute
@@ -74,28 +74,7 @@ const App = () => {
             {/* <Redirect from="/" to="/admin/index" /> */}
             <Route component={() => <div>404 Not found </div>} />
           </Switch>
-        </BrowserRouter>
-        {/* <BrowserRouter>
-          <Switch>
-            <ProtectedRoute
-              path="/admin"
-              render={(props) => <AdminLayout {...props} />}
-            />
-            <Route exact path="/" render={(props) => <Homepage {...props} />} />
-            <Route   path="/auth" render={(props) => <AuthLayout {...props} />} />
-            <Route
-
-              path="/group/:groupId"
-              render={(props) => <Group {...props} />}
-            />
-            <ProtectedRoute
-              path="/join/:userId/:groupId"
-              render={(props) => <JoinGroup {...props} />}
-            />
-
-            <Route component={() => <div>404 Not found </div>} />
-          </Switch>
-        </BrowserRouter> */}
+      
       </HashRouter>
     </AuthContext.Provider>
   );
