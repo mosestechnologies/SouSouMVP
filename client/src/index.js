@@ -46,8 +46,7 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
-      <HashRouter basename="/">
-       
+        <BrowserRouter>
           <Switch>
             <Route exact path="/" render={(props) => <Homepage />} />
             <ProtectedRoute
@@ -74,8 +73,8 @@ const App = () => {
             {/* <Redirect from="/" to="/admin/index" /> */}
             <Route component={() => <div>404 Not found </div>} />
           </Switch>
-      
-      </HashRouter>
+        </BrowserRouter>
+        
     </AuthContext.Provider>
   );
 };
