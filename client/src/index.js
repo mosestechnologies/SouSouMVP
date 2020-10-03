@@ -46,7 +46,7 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
-        <BrowserRouter>
+        <BrowserRouter basename="/">
           <Switch>
             <Route exact path="/" render={(props) => <Homepage />} />
             <ProtectedRoute
