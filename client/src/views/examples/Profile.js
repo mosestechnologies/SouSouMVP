@@ -16,23 +16,66 @@ import {
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 import { AuthContext } from "context/GlobalState";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+toast.configure();
 
 const Profile = () => {
   const [userProfile, setUserProfile] = useState({});
+  const [fetching, setFetching] = useState(true);
+  const [edit, setEdit] = useState(false);
   const {state} = React.useContext(AuthContext);
+
+  const token =  (localStorage.getItem('auth-token') || null);
+  let header = {
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': token
+      }
+  };
+
+  const handleOnChange = (e) => {
+    setUserProfile({
+      ...userProfile,
+      [e.target.name]: e.target.value
+    })
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    console.log(userProfile);
+    Axios.post(`/users/update/${state.user.id}`, userProfile, header)
+    .then( response => {
+      console.log('SUCCESSFULLY UPDATED: ', response);
+      toast.success('SUCCESSFULLY UPDATED', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        })
+      setEdit(false);
+    })
+    .catch( error => {
+      toast.error('Error! Updating', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        })
+    })
+  };
 
   useEffect(()=>{
     console.log('Profile');
     // const user = JSON.parse(localStorage.getItem('user') || null)
     const user = state.user;
-
-    const token =  (localStorage.getItem('auth-token') || null);
-    let header = {
-        headers: {
-          'Content-Type': 'application/json',
-          'auth-token': token
-        }
-    };
 
     Axios.get(`/users/find-user/${user.id}`, header) // Fetching user data
 		.then((response) => {
@@ -44,7 +87,7 @@ const Profile = () => {
         last_name: response.data.last_name,
         username: response.data.username,
       })
-			return response;
+			setFetching(false);
 		})
 		.catch((error) => {
 			// handle error
@@ -54,7 +97,7 @@ const Profile = () => {
 
     return (
       <>
-        <UserHeader />
+        <UserHeader nameTitle={ fetching ? "" : userProfile.first_name}/>
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
@@ -74,7 +117,7 @@ const Profile = () => {
                   </Col>
                 </Row>
                 <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                  <div className="d-flex justify-content-between">
+                  {/* <div className="d-flex justify-content-between">
                     <Button className="mr-4" color="info" href="#pablo" onClick={e => e.preventDefault()} size="sm">
                       Connect
                     </Button>
@@ -83,7 +126,7 @@ const Profile = () => {
                     >
                       Message
                     </Button>
-                  </div>
+                  </div> */}
                 </CardHeader>
                 <CardBody className="pt-0 pt-md-4">
                   {/* <Row>
@@ -142,14 +185,19 @@ const Profile = () => {
                       <h3 className="mb-0">My account</h3>
                     </Col>
                     <Col className="text-right" xs="4">
-                      <Button color="primary" href="#pablo" onClick={e => e.preventDefault()} size="sm">
-                        Settings
-                      </Button>
+                      {
+                        !edit ? (
+                          <Button color="primary" onClick={e => setEdit(true)} size="sm">
+                            Edit Profile
+                          </Button>
+                        ) : (<></>)
+                      }
+
                     </Col>
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  <Form>
+                  <Form onSubmit={ e => e.preventDefault}>
                     <h6 className="heading-small text-muted mb-4">
                       User information
                     </h6>
@@ -160,11 +208,13 @@ const Profile = () => {
                             <label className="form-control-label" htmlFor="input-username">
                               Username
                             </label>
-                            <Input type="text"
+                            <Input type="text" readOnly
                               className="form-control-alternative"
-                              defaultValue="lucky.jesse"
+                              value={`${userProfile.username || ''}`}
+                              //{...(edit ? {onChange: handleOnChange} : {readOnly: true})}
                               id="input-username"
                               placeholder={`${userProfile.username}`}
+                              name="username"
                             />
                           </FormGroup>
                         </Col>
@@ -176,6 +226,9 @@ const Profile = () => {
                             <Input
                               className="form-control-alternative"
                               id="input-email"
+                              name="email"
+                              value={userProfile.email || ''}
+                              {...(edit ? {onChange: handleOnChange} : {readOnly: true})}
                               placeholder={`${userProfile.email}`}
                               type="email"
                             />
@@ -190,10 +243,12 @@ const Profile = () => {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue={`${userProfile.first_name}`}
+                              value={`${userProfile.first_name || ''}`}
+                              {...(edit ? {onChange: handleOnChange} : {readOnly: true})}
                               id="input-first-name"
                               placeholder="First name"
                               type="text"
+                              name="first_name"
                             />
                           </FormGroup>
                         </Col>
@@ -204,18 +259,20 @@ const Profile = () => {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue={`${userProfile.last_name}`}
+                              value={`${userProfile.last_name || ''}`}
+                              {...(edit ? {onChange: handleOnChange} : {readOnly: true})}
                               id="input-last-name"
                               placeholder="Last name"
                               type="text"
+                              name="last_name"
                             />
                           </FormGroup>
                         </Col>
                       </Row>
                     </div>
-                    <hr className="my-4" />
+                    {/* <hr className="my-4" /> */}
                     {/* Address */}
-                    <h6 className="heading-small text-muted mb-4">
+                    {/* <h6 className="heading-small text-muted mb-4">
                       Contact information
                     </h6>
                     <div className="pl-lg-4">
@@ -278,23 +335,20 @@ const Profile = () => {
                           </FormGroup>
                         </Col>
                       </Row>
-                    </div>
-                    <hr className="my-4" />
-                    {/* Description */}
-                    <h6 className="heading-small text-muted mb-4">About me</h6>
-                    <div className="pl-lg-4">
-                      <FormGroup>
-                        <label>About Me</label>
-                        <Input
-                          className="form-control-alternative"
-                          placeholder="A few words about you ..."
-                          rows="4"
-                          defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                          Open Source."
-                          type="textarea"
-                        />
-                      </FormGroup>
-                    </div>
+                    </div> */}
+                    {
+                      edit ? (
+                        <>
+                          <hr className="my-4" />
+                          <button type="submit" onClick={ handleUpdate } className=" btn btn-success">
+                            Save Profile
+                          </button>
+                        </>
+                      ) : (
+                        <></>
+                      )
+                    }
+
                   </Form>
                 </CardBody>
               </Card>

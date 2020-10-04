@@ -30,7 +30,10 @@ import { AuthContext } from "../context/GlobalState";
 import { Link } from "react-router-dom";
 import { array, reach } from "yup";
 import { updateArrayBindingPattern } from "typescript";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure();
 const initialState = {
   groups: [],
   isFetching: false,
@@ -92,13 +95,32 @@ const Groups = () => {
     });
     toggle();
   };
-  const handleOnDelete = (groupId) => {
-    const del = async () => {
-      const req = await Axios.delete(`admin/group/${groupId}`);
-      const data = req.data;
-      console.log(data);
-    };
-    del();
+
+  const DeletePopup = () => (
+    <Modal isOpen={modal} toggle={toggle}>
+      <ModalHeader toggle={toggle}>
+        Edit Group Settings
+      </ModalHeader>
+      <ModalBody></ModalBody>
+    </Modal>
+  )
+  const handleOnDelete = async (groupID) => {
+    console.log("GROUP ID:::>>> ", groupID)
+    if (!window.confirm('are you sure')) return false;
+    const req = await Axios.delete(`/group/delete-group/${groupID}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": authState.token,
+      },
+    })
+    .then( response => {
+      toast.info('Group Deleted!!');
+      window.location.reload();
+    })
+    .catch( error => {
+      console.log('ERROR: DELETING: ', error);
+      toast.error('ERROR!! Deleting Group')
+    })
   };
 
   const handleOnClick = () => {
@@ -176,7 +198,7 @@ const Groups = () => {
         },
       })
         .then((response) => {
-          console.log(response.data.Groups);
+          //console.log(response.data.Groups);
           setGroupsList(response.data.Groups);
           return response;
         })
@@ -290,18 +312,11 @@ const Groups = () => {
                                   >
                                     <i className="fas fa-ellipsis-v" />
                                   </DropdownToggle>
-                                  <DropdownMenu
-                                    className="dropdown-menu-arrow"
-                                    right
-                                  >
-                                    <DropdownItem
-                                      onClick={() => handleOnEdit(list._id)}
-                                    >
+                                  <DropdownMenu className="dropdown-menu-arrow" right >
+                                    <DropdownItem onClick={() => handleOnEdit(list._id)}>
                                       Edit
                                     </DropdownItem>
-                                    <DropdownItem
-                                      onClick={() => handleOnDelete(list._id)}
-                                    >
+                                    <DropdownItem onClick={() => handleOnDelete(list._id)}>
                                       Delete
                                     </DropdownItem>
                                     <Modal isOpen={modal} toggle={toggle}>
